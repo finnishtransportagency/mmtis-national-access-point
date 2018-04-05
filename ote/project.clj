@@ -58,7 +58,9 @@
                  [cljsjs/material-ui-chip-input "0.17.2-0"]
                  [figwheel "0.5.13"]
                  [cljsjs/react-leaflet "1.6.5-0" :exclusions [cljsjs/leaflet]]
+
                  [cljsjs/leaflet "1.2.0-0"]
+                 ;[mappy "20180404"]
                  [funcool/bide "1.6.0"] ; URL router
                  [stylefy "1.0.1"]
                  [cljsjs/leaflet-draw "0.4.12-0"]
@@ -112,7 +114,7 @@
   :cljsbuild {:builds
               [;; Paikallinen kehitys build
                {:id "dev"
-                :source-paths ["src/cljs" "src/cljc"]
+                :source-paths ["src/cljs" "src/cljc" "../../mappy/src/cljs"]
                 :figwheel {:on-jsload "ote.main/reload-hook"}
                 :compiler {:optimizations :none
                            ;;:verbose true

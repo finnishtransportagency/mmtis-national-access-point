@@ -58,7 +58,7 @@
             :stops (distinct (mapcat val stop-sequences))
             :lines (doall
                     (for [positions lines]
-                      {:positions (clj->js positions)
+                      {:positions positions #_(clj->js positions)
                        :color color}))
             :bearing-markers (mapcat #(gq/bearing-markers % 25)
                                      (vals shapes-by-id))})))
