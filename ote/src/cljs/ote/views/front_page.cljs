@@ -231,7 +231,7 @@
   [:div
    [:div.hero {:style {:height          "540px"
                        :margin-top      "-20px"
-                       :background      "url(/img/hero.png)"
+                       :background      "url(/img/hero.jpg)"
                        :background-size "cover"}}
     [:div.container {:style {:padding-top "20px" }}
      [:h1 (stylefy/use-style style-front-page/front-page-h1) "NAP"]
