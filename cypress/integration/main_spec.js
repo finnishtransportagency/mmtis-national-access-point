@@ -31,34 +31,36 @@ describe('OTE login dialog', () => {
         cy.visit('/')
     });
 
-    const login = (username, password, click) => {
+    const login = (username, password, activate) => {
         cy.contains('Kirjaudu sisään').click();
-        cy.get('input[id*="email--Shkpostiosoite"]').type(username);
-        cy.get('input[id*="password--Salasana"]').type(password);
+        cy.get('input[id*="email--Shkpostiosoite"]').typeRaw(username);
+        cy.get('input[id*="password--Salasana"]').typeRaw(password);
 
-        if (click) {
+        if (activate === 'click') {
             cy.get('.login-dialog-footer button').click();
+        } else if (activate === 'enter') {
+            cy.get('input[id*="password--Salasana"]').type('{enter}');
         }
         cy.wait('@login');
     };
 
     it('should warn about unknown user', () => {
-        login(genNaughtyString(20), genNaughtyString(20), true);
+        login(genNaughtyString(20), genNaughtyString(20), 'click');
         cy.contains('Tuntematon käyttäjä');
     });
 
     it('should warn about wrong password', () => {
-        login(Cypress.env('NAP_LOGIN'), genNaughtyString(20), true);
+        login(Cypress.env('NAP_LOGIN'), genNaughtyString(20), 'click');
         cy.contains('Väärä salasana');
     });
 
     it('should login properly with correct credentials', () => {
-        login(Cypress.env('NAP_LOGIN'), Cypress.env('NAP_PASSWORD'), true);
+        login(Cypress.env('NAP_LOGIN'), Cypress.env('NAP_PASSWORD'), 'click');
         cy.contains('Kirjauduit sisään onnistuneesti!');
     });
 
     it('should login by pressing enter', () => {
-        login(Cypress.env('NAP_LOGIN'), Cypress.env('NAP_PASSWORD') + '{enter}', false);
+        login(Cypress.env('NAP_LOGIN'), Cypress.env('NAP_PASSWORD'), 'enter');
         cy.contains('Kirjauduit sisään onnistuneesti!');
     });
 });

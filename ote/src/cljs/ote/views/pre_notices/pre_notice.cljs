@@ -214,6 +214,7 @@
           ^{:key region}
           [leaflet/GeoJSON {:data  region-geojson
                             :style {:color "green"}}]))])}))
+
 (defn notice-area [e!]
   (form/group
     {:label   (tr [:pre-notice-page :route-and-area-information-title])
@@ -292,6 +293,7 @@
                     {:name :attachment-file
                      :button-label (tr [:pre-notice-page :select-attachment])
                      :type :file-and-delete
+                     :allowed-file-types [".pdf" ".png" ".jpeg"]
                      :disabled? sent?
                      :on-change #(e! (pre-notice/->UploadAttachment (.-target %)))
                      :on-delete #(e! (pre-notice/->DeleteAttachment %))}]}))

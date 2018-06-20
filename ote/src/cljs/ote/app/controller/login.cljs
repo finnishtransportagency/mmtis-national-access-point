@@ -56,6 +56,22 @@
                  :transport-operator (:transport-operator selected-operator)
                  :transport-service-vector (:transport-service-vector selected-operator))))))
 
+(defn- login-navigate->page [app response]
+  (let [authority? (get-in response [:session-data :user :transit-authority?])
+        operators-count (count (get-in response [:session-data :transport-operators]))
+        navigate-to (get-in app [:login :navigate-to])
+        new-page (cond
+                   (not (empty? navigate-to)) (:page navigate-to)
+                   (and authority? (= 0 operators-count)) :authority-pre-notices
+                   :else :own-services)]
+    (do
+      (routes/navigate! new-page (:params navigate-to))
+      (-> app
+          (dissoc :login)
+          (update-transport-operator-data (:session-data response))
+          (assoc :flash-message (tr [:common-texts :logged-in])
+                 :page new-page)))))
+
 (extend-protocol tuck/Event
 
   ShowLoginDialog
@@ -79,22 +95,12 @@
 
   LoginResponse
   (process-event [{response :response} app]
-    (let [navigate-to (get-in app [:login :navigate-to])
-          new-page (if navigate-to
-                     (:page navigate-to)
-                     :own-services)]
-    (if (:success? response)
-      (do
-        (routes/navigate! new-page (:params navigate-to))
-        (-> app
-            (dissoc :login)
-            (update-transport-operator-data (:session-data response))
-            (assoc :flash-message (tr [:common-texts :logged-in])
-                   :page new-page)))
-      (update app :login assoc
-              :failed? true
-              :in-progress? false
-              :error (:error response)))))
+      (if (:success? response)
+        (login-navigate->page app response)
+        (update app :login assoc
+                :failed? true
+                :in-progress? false
+                :error (:error response))))
 
   LoginFailed
   (process-event [{response :response} app]

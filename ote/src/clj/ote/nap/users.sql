@@ -59,3 +59,20 @@ SELECT group_id
   FROM group_extra
  WHERE key = 'transit-authority?'
    AND value = 'true';
+
+-- name: search-user-operators-and-members
+-- Find users operators and their members and get only admin users.
+SELECT g.title as "operator-name",
+ (SELECT array_agg(m.table_id) FROM member m
+   WHERE m.group_id = g.id
+     AND m.capacity = 'admin'
+     AND m.state = 'active'
+     AND m.table_id != :user-id) as "members"
+ FROM "member" m, "group" g
+WHERE m.table_id = :user-id
+AND g.id = m.group_id
+AND m.state = 'active';
+
+-- name: delete-user!
+-- "Delete" user from the database - only changes user data to null to preserve foreign key links
+UPDATE "user" SET name = :name, fullname = NULL, email = NULL, state = 'deleted' WHERE id = :id;

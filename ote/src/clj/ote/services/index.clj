@@ -21,7 +21,8 @@
                    :rel "stylesheet"}
                   {:href "https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
                    :integrity "sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="}
-                  {:href "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.css"}])
+                  {:href "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.css"}
+                  {:href"https://fonts.googleapis.com/icon?family=Material+Icons"}])
 
 (defn ote-js-location [dev-mode?]
   (str "js/ote"

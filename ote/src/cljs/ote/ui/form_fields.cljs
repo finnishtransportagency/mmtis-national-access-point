@@ -150,11 +150,14 @@
       {:on-key-press #(when (= "Enter" (.-key %))
                         (on-enter))}))])
 
-(defmethod field :file-and-delete [{:keys [on-delete table-data row-number disabled?] :as f} data]
+(defmethod field :file-and-delete [{:keys [on-delete table-data row-number disabled? allowed-file-types] :as f} data]
   (let [row-data (get table-data row-number)]
     (if (or (empty? row-data) (:error row-data))
+      [:div
       (field (assoc f :type :file
                       :error (:error row-data)))
+       (when allowed-file-types
+        [:span [:br] (str (tr [:form-help :allowed-file-types])  (str/join ", " allowed-file-types))])]
       [ui/icon-button (merge
                         {:on-click #(on-delete row-number)}
                         (when disabled?

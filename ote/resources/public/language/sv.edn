@@ -308,6 +308,7 @@
   :trip-editor-no-stop-sequence "Skapa rutten först, därefter avgångarna."
   :pre-notice-attatchment-info "Meddela de detaljerade rutt- och tidtabellsändringarna i din transporttjänst inom persontrafik. Du kan lägga till en webbadress där uppgifterna framgår. Du kan också bifoga filer som visar ändringarna till denna blankett."
   :autocomplete-hint "Kirjoita oma tai valitse listalta"
+  :allowed-file-types "Godkända filformat är "
   }
 
  ;; License suggestions (TODO: If we will have more of options, it would be better to store these in the database)

@@ -6,7 +6,4 @@ SELECT "change-date",
  WHERE "transport-operator-id" = :operator-id;
 
 -- name: list-current-operators
-SELECT "transport-operator-id",
-       "transport-operator-name",
-       "transport-service-name"
-  FROM "nightly-transit-changes";
+SELECT * FROM "nightly-transit-changes";

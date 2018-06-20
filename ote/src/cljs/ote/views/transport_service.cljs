@@ -90,8 +90,7 @@
     :passenger-transportation (tr [:passenger-transportation-page :header-edit-passenger-transportation])
     :terminal (tr [:terminal-page :header-edit-terminal])
     :rentals (tr [:rentals-page :header-edit-rentals])
-    :parking (tr [:parking-page :header-edit-parking])
-  ))
+    :parking (tr [:parking-page :header-edit-parking])))
 
 (defn new-service-header-text [service-type]
   (case service-type
@@ -114,56 +113,41 @@
      :rentals [rental/rental e! (:transport-service app) app]
      :parking [parking/parking e! (:transport-service app) app])])
 
-(defn edit-service-by-id [e! app]
-  (e! (ts/->ModifyTransportService (get-in app [:params :id])))
-  (r/create-class
-   {:component-will-receive-props
-    (fn [_ [_ _ {params :params
-                 service :transport-service
-                 loaded? :transport-service-loaded?}]]
-      ;; If service id is changed while in the form (navigation changes URL param),
-      ;; load the new service data
-      (when (and loaded?
-                 (not= (str (::t-service/id service))
-                       (:id params)))
-        (e! (ts/->ModifyTransportService (:id params)))))
-    :reagent-render
-    (fn [e! {loaded? :transport-service-loaded? service :transport-service :as app}]
-      (if (or (nil? service) (not loaded?))
-        [:div.loading [:img {:src "/base/images/loading-spinner.gif"}]]
-        ;; Render transport service page only if given id matches with the loaded id
-        ;; This will prevent page render with "wrong" or "empty" transport-service data
-        (when (= (get-in app [:params :id]) (str (get-in app [:transport-service ::t-service/id])))
-          [:div
-            [:h1 (edit-service-header-text (keyword (::t-service/type service)))]
-             ;; Passenger transport service has sub type, and here it is shown to users
-            (when (= :passenger-transportation (keyword (::t-service/type service)))
-              [:p (stylefy/use-style style-form/subheader)
-                (tr [:enums :ote.db.transport-service/sub-type
-                     (get-in app [:transport-service ::t-service/sub-type])])])
-           ;; Show service owner name only for service owners
-           (when (ts/is-service-owner? app)
-             [:h2 (get-in app [:transport-operator ::t-operator/name])])
-            ;; Render the form
-            [edit-service e! (::t-service/type service) app]])))}))
+(defn edit-service-by-id [e! {loaded? :transport-service-loaded? service :transport-service :as app}]
+  (if (or (nil? service) (not loaded?))
+    [:div.loading [:img {:src "/base/images/loading-spinner.gif"}]]
+    ;; Render transport service page only if given id matches with the loaded id
+    ;; This will prevent page render with "wrong" or "empty" transport-service data
+    (when (= (get-in app [:params :id]) (str (get-in app [:transport-service ::t-service/id])))
+      [:div
+       [:h1 (edit-service-header-text (keyword (::t-service/type service)))]
+       ;; Passenger transport service has sub type, and here it is shown to users
+       (when (= :passenger-transportation (keyword (::t-service/type service)))
+         [:p (stylefy/use-style style-form/subheader)
+          (tr [:enums :ote.db.transport-service/sub-type
+               (get-in app [:transport-service ::t-service/sub-type])])])
+       ;; Show service owner name only for service owners
+       (when (ts/is-service-owner? app)
+         [:h2 (get-in app [:transport-operator ::t-operator/name])])
+       ;; Render the form
+       [edit-service e! (::t-service/type service) app]])))
 
-(defn create-new-service [e! app]
+(defn create-new-service
   "Render container and headers for empty service form"
-  (e! (ts/->SetNewServiceType app))
-  (fn [e! app]
-    (when (get-in app [:transport-service ::t-service/type])
-      (let [service-sub-type (get-in app [:transport-service ::t-service/sub-type])
+  [e! app]
+  (when (get-in app [:transport-service ::t-service/type])
+    (let [service-sub-type (get-in app [:transport-service ::t-service/sub-type])
           service-type (get-in app [:transport-service ::t-service/type])
           new-header-text (new-service-header-text service-type)]
 
-           [:div
-            [:h1 new-header-text ]
-          ;; Passenger transport service has sub type, and here it is shown to users
-          (when (= :passenger-transportation service-type)
-             [:p (stylefy/use-style style-form/subheader)
-              (tr [:enums :ote.db.transport-service/sub-type
-                   (get-in app [:transport-service ::t-service/sub-type])])])
+      [:div
+       [:h1 new-header-text ]
+       ;; Passenger transport service has sub type, and here it is shown to users
+       (when (= :passenger-transportation service-type)
+         [:p (stylefy/use-style style-form/subheader)
+          (tr [:enums :ote.db.transport-service/sub-type
+               (get-in app [:transport-service ::t-service/sub-type])])])
 
        [:div.row
-       [:h2 (get-in app [:transport-operator ::t-operator/name])]]
-       [edit-service e! service-type  app]]))))
+        [:h2 (get-in app [:transport-operator ::t-operator/name])]]
+       [edit-service e! service-type  app]])))

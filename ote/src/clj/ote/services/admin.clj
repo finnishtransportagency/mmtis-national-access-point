@@ -58,6 +58,19 @@
           user))
       users)))
 
+(defn- delete-user [db user query]
+  (let [id (:id query)
+        timestamp (java.util.Date.)]
+    (log/info "Deleting user with id: " (pr-str id))
+    (nap-users/delete-user! db {:id id :name timestamp})
+    id))
+
+(defn- user-operator-members [db user query]
+  (let [user-id (:id query)
+        members (into [] (nap-users/search-user-operators-and-members db {:user-id user-id}))]
+    (mapv (fn [x]
+            (update x :members #(db-util/PgArray->vec %))) members)))
+
 (defn- published-search-param [query]
   (case (:published-type query)
     nil? nil
@@ -107,9 +120,11 @@
         operator-name (:operator-name query)
         import-error (:import-error query)
         db-error (:db-error query)
-        interface-format (:interface-format query)]
+        interface-format (:interface-format query)
+        interface-url (:interface-url query)]
   (interfaces-array->vec (search-interfaces db {:service-name     (when service-name (str "%" service-name "%"))
                                                 :operator-name    (when operator-name (str "%" operator-name "%"))
+                                                :interface-url    (when interface-url (str "%" interface-url "%"))
                                                 :import-error     (when import-error true)
                                                 :db-error         (when db-error true)
                                                 :interface-format (when (and interface-format (not= :ALL interface-format)) (str/lower-case (name interface-format)))}))))
@@ -168,6 +183,10 @@
 (defn- admin-routes [db http nap-config]
   (routes
     (POST "/admin/users" req (admin-service "users" req db #'list-users))
+
+    (POST "/admin/delete-user" req (admin-service "delete-user" req db #'delete-user))
+
+    (POST "/admin/user-operator-members" req (admin-service "user-operators" req db #'user-operator-members))
 
     (POST "/admin/transport-services" req (admin-service "services" req db #'list-services))
 

@@ -4,6 +4,7 @@
             [reagent.core :as reagent]
             [cljs-react-material-ui.reagent :as ui]
             [cljs-react-material-ui.icons :as ic]
+            [ote.ui.icons :as icons]
             [ote.ui.common :refer [linkify ckan-iframe-dialog]]
             [ote.ui.form :as form]
             [ote.ui.form-groups :as form-groups]
@@ -229,14 +230,11 @@
   "Front page info"
   [e! {user :user :as app}]
   [:div
-   [:div.hero {:style {:height          "540px"
-                       :margin-top      "-20px"
-                       :background      "url(/img/hero.jpg)"
-                       :background-size "cover"}}
+   [:div.hero (stylefy/use-style style-front-page/hero-img)
     [:div.container {:style {:padding-top "20px" }}
      [:h1 (stylefy/use-style style-front-page/front-page-h1) "NAP"]
      [:div (stylefy/use-style style-front-page/front-page-hero-text) (tr [:front-page :hero-title])
-      [:div.row {:style {:padding-top "60px"}}
+      [:div.row (stylefy/use-style style-front-page/hero-btn)
        [:a {:on-click   #(do
                             (.preventDefault %)
                             (e! (fp/->ChangePage :services nil)))}
@@ -248,7 +246,7 @@
    [:div.container
     [:div.row (stylefy/use-style style-front-page/row-media)
      [:div.col-xs-12.col-sm-3.col-md-3 (stylefy/use-style style-front-page/large-icon-container)
-      [ic/action-all-out {:style  style-front-page/large-icon}]]
+      [icons/all-out style-front-page/large-font-icon]]
      [:div.col-xs-12.col-sm-9.col-md-9 (stylefy/use-style style-front-page/large-text-container)
       [:h2
        (stylefy/use-style style-front-page/h2)
@@ -263,11 +261,10 @@
       [:p {:style {:font-size "1em" :font-weight 400 :text-aign "left" :line-height "1.5"}}
        (tr [:front-page :column-transport-services])]]
      [:div.col-xs-12.col-sm-3.col-md-3 (stylefy/use-style style-front-page/large-icon-container)
-      [ic/places-airport-shuttle {:style {:width 200 :height 200 :color "#969696"}}]]
-     ]
+      [icons/airport-shuttle style-front-page/large-font-icon]]]
     [:div.row (stylefy/use-style style-front-page/row-media)
      [:div.col-xs-12.col-sm-3.col-md-3 (stylefy/use-style style-front-page/large-icon-container)
-      [ic/content-flag {:style {:width 200 :height 200 :color "#969696"}}]]
+      [icons/flag style-front-page/large-font-icon]]
      [:div.col-xs-12.col-sm-9.col-md-9 (stylefy/use-style style-front-page/large-text-container)
       [:h2
        (stylefy/use-style style-front-page/h2)
@@ -279,28 +276,34 @@
     [:div.container
      [:div.col-md-6
       [:div (stylefy/use-style style-front-page/lower-section-data-container)
-       [ic/maps-train {:style  style-front-page/lower-section-icon}]
-       [:h3 {:style {:font-size "1.5em" :font-weight 600}} (tr [:front-page :title-transport-operator])]
+       [icons/train style-front-page/lower-section-font-icon]
+       [:h3 (stylefy/use-style style-front-page/lower-section-title) (tr [:front-page :title-transport-operator])]
        [:p (stylefy/use-style style-front-page/lower-section-text)
         (tr [:front-page :column-transport-operator])]
        [:div {:style {:padding-top "20px"}}
-        (when (not (get-in app [:user :username]))
-          [:a {:on-click #(do
+        (if (not (get-in app [:user :username]))
+          [:a {:style    {:text-decoration "none"}
+               :on-click #(do
                             (.preventDefault %)
                             (e! (fp/->ToggleRegistrationDialog)))}
            [:button (stylefy/use-style style-front-page/front-page-button)
             [:span [ic/social-person-add {:style {:height 23 :width 40 :padding-top 0 :color "#fff"}}]]
+            (tr [:buttons :register-to-service])]]
+          [:a {:style    {:text-decoration "none"}
+               :on-click #(.preventDefault %)}
+           [:button (stylefy/use-style style-front-page/front-page-button-disabled)
+            [:span [ic/social-person-add {:style {:height 23 :width 40 :padding-top 0 :color "#fff"}}]]
             (tr [:buttons :register-to-service])]])]]]
      [:div.col-md-6 (stylefy/use-style style-front-page/media-transport-service)
       [:div (stylefy/use-style style-front-page/lower-section-data-container)
-       [ic/device-developer-mode {:style  style-front-page/lower-section-icon}]
-       [:h3 {:style {:font-size "1.5em" :font-weight 600}} (tr [:front-page :title-developer])]
+       [icons/developer-mode style-front-page/lower-section-font-icon]
+       [:h3 (stylefy/use-style style-front-page/lower-section-title) (tr [:front-page :title-developer])]
        [:p (stylefy/use-style style-front-page/lower-section-text)
         (tr [:front-page :column-developer])]
        [:div {:style {:padding-top "20px"}}
-        [:a {:on-click   #(do
-                            (.preventDefault %)
-                            (e! (fp/->ChangePage :services nil)))}
+        [:a {:on-click #(do
+                          (.preventDefault %)
+                          (e! (fp/->ChangePage :services nil)))}
          [:button (stylefy/use-style style-front-page/front-page-button)
           [:span [ic/device-dvr {:style {:height 23 :width 40 :padding-top 0 :color "#fff"}}]]
           (tr [:buttons :check-out-the-service])]]]]]]]])

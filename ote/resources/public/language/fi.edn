@@ -301,6 +301,7 @@ Voit myös piirtää toimialueen tai toimipisteen kartan piirtotyökalujen avull
   :trip-editor-no-stop-sequence "Lisää pysäkkiketju ennen vuoroja."
   :pre-notice-attatchment-info "Ilmoita henkilöliikennepalvelusi yksityiskohtaiset reitti- ja aikataulumuutokset. Voit lisätä web-osoitteen, josta tiedot ovat luettavissa. Vaihtoehtoisesti voit lisätä tälle lomakkeelle liitteitä, joista muutokset käyvät ilmi."
   :autocomplete-hint "Kirjoita oma tai valitse listalta"
+  :allowed-file-types "Hyväksyttyjä tiedostomuotoja ovat "
   }
 
  ;; License suggestions (TODO: If we will have more of options, it would be better to store these in the database)

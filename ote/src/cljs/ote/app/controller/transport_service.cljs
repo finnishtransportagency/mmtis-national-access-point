@@ -1,6 +1,6 @@
 (ns ote.app.controller.transport-service
   "Transport operator controls "                            ;; FIXME: Move transport-service related stuff to other file
-  (:require [tuck.core :as tuck]
+  (:require [tuck.core :as tuck :refer-macros [define-event]]
             [ote.communication :as comm]
             [ote.util.csv :as csv-util]
             [ote.db.transport-service :as t-service]
@@ -15,13 +15,52 @@
             [testdouble.cljs.csv :as csv]))
 
 (defn- pre-set-transport-type [app]
-  (let [sub-type (get-in app[:transport-service ::t-service/sub-type])
+  (let [sub-type (get-in app [:transport-service ::t-service/sub-type])
         set-transport-type (fn [app service-type options]
                                  (assoc-in app [:transport-service service-type ::t-service/transport-type] options))]
     (cond
       (= sub-type :taxi) (set-transport-type app ::t-service/passenger-transportation #{:road})
       (= sub-type :parking) (set-transport-type app ::t-service/parking #{:road})
       :else app)))
+
+(defn service-type-from-sub-type
+      "Returns service type keyword based on sub-type."
+  [type]
+  (case type
+    :taxi :passenger-transportation
+    :request :passenger-transportation
+    :schedule :passenger-transportation
+    :terminal :terminal
+    :rentals :rentals
+    :parking :parking))
+
+(define-event CreateServiceNavigate [operator-id sub-type]
+  {}
+  ;; Set transport-operator and sub-type
+  (pre-set-transport-type
+   (assoc app
+          :transport-operator (->> app :transport-operators-with-services
+                                   (map :transport-operator)
+                                   (filter #(= (::t-operator/id %) operator-id))
+                                   first)
+          :transport-service (merge (:transport-service app)
+                                    (when sub-type
+                                      {::t-service/sub-type sub-type
+                                       ::t-service/type (service-type-from-sub-type sub-type)})))))
+
+;;; Navigation hook events for new service creation and editing
+
+(defmethod routes/on-navigate-event :new-service [{p :params}]
+  (->CreateServiceNavigate (js/parseInt (:operator-id p))
+                           (keyword (:sub-type p))))
+
+(defmethod routes/on-navigate-event :transport-service [{p :params}]
+  (->CreateServiceNavigate (js/parseInt (:operator-id p)) nil))
+
+(declare ->ModifyTransportService)
+
+(defmethod routes/on-navigate-event :edit-service [{p :params}]
+  (->ModifyTransportService (:id p)))
 
 (defn new-transport-service [app]
   (pre-set-transport-type
@@ -48,16 +87,7 @@
     :csv-count
     ::t-service/transport-type})
 
-(defn service-type-from-sub-type
-      "Returns service type keyword based on sub-type."
-      [type]
-      (case type
-            :taxi :passenger-transportation
-            :request :passenger-transportation
-            :schedule :passenger-transportation
-            :terminal :terminal
-            :rentals :rentals
-            :parking :parking))
+
 
 (defrecord AddPriceClassRow [])
 (defrecord AddServiceHourRow [])
@@ -231,14 +261,15 @@
   (process-event [_ app]
     (let [app (new-transport-service app)
           sub-type (get-in app [:transport-service ::t-service/sub-type])]
-      (routes/navigate! :new-service {:sub-type (name sub-type)})
+      (routes/navigate! :new-service {:operator-id (-> app :transport-operator ::t-operator/id str)
+                                      :sub-type (name sub-type)})
       app))
 
   OpenTransportServiceTypePage
   ;; :transport-service :<transport-service-type> needs to be cleaned up before creating a new one
   (process-event [_ app]
     (let [app (new-transport-service app)]
-      (routes/navigate! :transport-service)
+      (routes/navigate! :transport-service {:operator-id (-> app :transport-operator ::t-operator/id str)})
       app))
 
   ModifyTransportService
@@ -252,11 +283,15 @@
     (let [type (::t-service/type response)]
       (assoc app
         :transport-service-loaded? true
-        :transport-service
-        (-> response
-            (update ::t-service/operation-area place-search/operation-area-to-places)
-            (move-service-level-keys-to-form (t-service/service-key-by-type type))
-            transform-edit-by-type))))
+        :transport-service (-> response
+                               (update ::t-service/operation-area place-search/operation-area-to-places)
+                               (move-service-level-keys-to-form (t-service/service-key-by-type type))
+                               transform-edit-by-type)
+        :transport-operator (->> app :transport-operators-with-services
+                                 (map :transport-operator)
+                                 (filter #(= (::t-operator/id %)
+                                             (::t-service/transport-operator-id response)))
+                                 first))))
 
   EnsureCsvFile
   (process-event [_ app]

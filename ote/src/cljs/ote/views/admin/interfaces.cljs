@@ -153,6 +153,12 @@
            :full-width?     true
            :container-class "col-xs-12 col-sm-4 col-md-4"
            }
+          {:name            :interface-url
+           :type            :string
+           :label           "Rajapinnan osoite"
+           :full-width?     true
+           :container-class "col-xs-12 col-sm-4 col-md-4"
+           }
           {:name            :import-error
            :type            :checkbox
            :label           "Latausvirheet"

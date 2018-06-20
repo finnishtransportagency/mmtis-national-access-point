@@ -15,14 +15,11 @@
             [cljs-react-material-ui.icons :as ic]
             [reagent.core :as r]
             [ote.ui.common :as ui-common]
-            [ote.ui.common :as common-ui]
-            [ote.views.admin.interfaces :as interfaces]))
+            [ote.views.admin.interfaces :as interfaces]
+            [ote.views.admin.users :as users]))
 
 (def id-filter-type [:operators :services :ALL])
 (def published-types [:YES :NO :ALL])
-
-(def groups-header-style {:height "10px" :padding "5px 0 5px 0"})
-(def groups-row-style {:height "20px" :padding 0})
 
 (defn- delete-transport-operator-action [e! {::t-operator/keys [id name]
                                 :keys [show-delete-modal?]
@@ -129,79 +126,6 @@
                                                                                            (e! (fp/->ChangePage :transport-operator {:id id})))}
                                                               [ic/content-create]]
                  [delete-transport-operator-action e! result]]]))]]])]]))
-
-(defn groups-list [groups]
-  [:div {:style {:border-left "1px solid rgb(224, 224, 224)"}}
-   (if (seq groups)
-     [:div {:style {:padding "0 0 15px 10px"}}
-
-      [ui/table {:selectable false
-                 :fixed-header true
-                 :body-style {:overflow-y "auto"
-                              :max-height "100px"}}
-       [ui/table-header {:adjust-for-checkbox false
-                         :display-select-all false}
-        [ui/table-row {:style groups-header-style}
-         [ui/table-header-column {:style groups-header-style} "Nimi"]
-         [ui/table-header-column {:style groups-header-style} "ID"]]]
-       [ui/table-body {:display-row-checkbox false
-                       :show-row-hover true}
-
-        (doall
-          (for [{:keys [title name]} groups]
-            ^{:key (str "group-" name)}
-            [ui/table-row {:selectable false
-                           :style groups-row-style}
-             [ui/table-row-column {:style groups-row-style} title]
-             [ui/table-row-column {:style groups-row-style} name]]))]]]
-     [:div {:style {:padding-left "10px"
-                    :line-height "48px"}}
-      "Ei palveluntuottajia."])])
-
-(defn user-listing [e! app]
-  (let [{:keys [loading? results user-filter]} (get-in app [:admin :user-listing])]
-    [:div
-     [:div {:style {:margin-bottom "25px"}}
-      [form-fields/field {:style {:margin-right "10px"}
-                          :type :string :label "Nimen tai sähköpostiosoitteen osa"
-                          :update! #(e! (admin-controller/->UpdateUserFilter %))}
-       user-filter]
-
-      [ui/raised-button {:primary true
-                         :disabled (str/blank? filter)
-                         :on-click #(e! (admin-controller/->SearchUsers))
-                         :label "Hae käyttäjiä"}]]
-
-     (if loading?
-       [:span "Ladataan käyttäjiä..."]
-       [:div {:style {:margin-bottom "10px"}} "Hakuehdoilla löytyi " (count results) " käyttäjää."])
-
-     (when (seq results)
-       [:span
-        [ui/table {:selectable false
-                   :fixed-header false
-                   :style {:width "auto" :table-layout "auto"}
-                   :wrapper-style {:border-style "solid"
-                                   :border-color "rgb(224, 224, 224)"
-                                   :border-width "1px 1px 0 1px"}}
-         [ui/table-header {:adjust-for-checkbox false
-                           :display-select-all false}
-          [ui/table-row
-           [ui/table-header-column "Käyttäjätunnus"]
-           [ui/table-header-column "Nimi"]
-           [ui/table-header-column "Sähköposti"]
-           [ui/table-header-column "Palveluntuottajat"]]]
-         [ui/table-body {:display-row-checkbox false}
-          (doall
-            (for [{:keys [username name email groups]} results]
-              ^{:key (str "user-" username)}
-              [ui/table-row {:style {:border-bottom "3px solid rgb(224, 224, 224)"}
-                             :selectable false}
-               [ui/table-row-column username]
-               [ui/table-row-column name]
-               [ui/table-row-column email]
-               [ui/table-row-column {:style {:padding 0}}
-                 [groups-list groups]]]))]]])]))
 
 (defn business-id-report [e! app]
   (let [{:keys [loading? business-id-filter results]} (get-in app [:admin :business-id-report])]
@@ -319,7 +243,7 @@
     [ui/tabs {:value     selected-tab
               :on-change #(e! (admin-controller/->ChangeAdminTab %))}
      [ui/tab {:label "Käyttäjät" :value "users"}
-      [user-listing e! app]]
+      [users/user-listing e! app]]
      [ui/tab {:label "Palvelut" :value "services"}
       [service-listing e! app]]
      [ui/tab {:label "Y-tunnus raportti" :value "businessid"}

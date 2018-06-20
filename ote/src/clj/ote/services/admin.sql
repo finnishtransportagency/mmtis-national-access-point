@@ -27,6 +27,7 @@ i.format as format, i."gtfs-imported" as imported, i."gtfs-import-error" as "imp
   FROM "transport-operator" as op, "transport-service" as ts, "external-interface-description" as i
  WHERE (:operator-name::TEXT IS NULL OR op.name ilike :operator-name)
   AND (:service-name::TEXT IS NULL OR ts.name ilike :service-name)
+  AND (:interface-url::TEXT IS NULL OR (i."external-interface").url ilike :interface-url)
   AND (:import-error::BOOLEAN IS NULL OR i."gtfs-import-error" IS NOT NULL)
   AND (:db-error::BOOLEAN IS NULL OR i."gtfs-db-error" IS NOT NULL)
   AND (:interface-format::TEXT IS NULL OR :interface-format = ANY(lower(i.format::text)::text[]))

@@ -58,6 +58,7 @@ In order to our OTE menu to render correctly work, we need to reset margin and p
 .wrapper {
     padding: 20px 0px 0px 0px;
     min-height: 100%;
+    margin-top: 80px;
 }
 
 /* Disable top margin for h1 inside wrapper, we do not need top margin for these, as they are our titles.
