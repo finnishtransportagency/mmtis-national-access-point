@@ -876,7 +876,10 @@ You can also draw the operating area or point to the map with drawing tools. You
  {:loading-routes "Loading service routes."}
 
  :common-texts
- {:front-page-help-text "You have not yet registered any transport services to NAP-service catalog.
+ {:business-id-and-aux-names "Företagsnamn och hjälpnamn"
+  :business-id-contact-details "Kontaktuppgifter för företagsnamn"
+  :fetch-from-ytj "Fetch data from YTJ"
+  :front-page-help-text "You have not yet registered any transport services to NAP-service catalog.
         You can register an external interface about your service or essential data about your service by using
         the NAP-service which Finnish Transport Aggency has developed for this purpose."
   :front-page-start-ote-query-header "Do you want to register essential data of your transport service?"
@@ -949,7 +952,11 @@ You can also draw the operating area or point to the map with drawing tools. You
   :minutes-placeholder "mm"
 
   :server-error "Error in server call. Contact support if the problem persists."
+  :server-error-try-later "Problems with a service. Please try again later."
+
   :forbidden "Forbidden"
+  :optionally-fill-manually "Optionally you may proceed to enter details manually."
+
   :nap-data-license (:md "The information you fill in on this form will be published in the NAP service catalog as open data. The published data will be licensed with [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.en).")
 
   :save-user-success "Account info saved"
