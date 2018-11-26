@@ -1017,3 +1017,21 @@
           :form [company-input-fields update! companies data]
           ;; default
           ""))]]))
+
+(defmethod field :external-button [{:keys [label on-click disabled primary secondary]}]
+  ;; Options
+  ; :label Button label text for displaying
+  ; :on-click On-click callback fn
+  ; :disabled Boolean property for disabling button
+  ; primary
+  ; secondary
+  [:div
+   [ui/raised-button
+    {:label     label
+     :primary   primary
+     :secondary secondary
+     :on-click  #(on-click)
+     :disabled  disabled
+     }]]
+  )
+
