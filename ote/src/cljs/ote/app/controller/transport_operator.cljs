@@ -6,7 +6,8 @@
             [ote.db.transport-operator :as t-operator]
             [ote.app.routes :as routes]
             [tuck.core :refer [define-event send-async! Event]]
-            [ote.app.controller.common :refer [->ServerError]]))
+            [ote.app.controller.common :refer [->ServerError]]
+            [ote.db.common :as common]))
 
 (define-event ToggleTransportOperatorDeleteDialog []
   {:path [:transport-operator :show-delete-dialog?]
@@ -27,6 +28,49 @@
             {:on-success (send-async! ->DeleteTransportOperatorResponse)
              :on-failure (send-async! ->ServerError)})
   app)
+
+(defn- address-of-type [type addresses]
+  "Returns from a vector the first map whose type key matches to YTJ address type."
+  (let [item (first (filter #(= type (:type %)) addresses))]
+    {
+     ::common/post_office (:city item)
+     ::common/postal_code (:postCode item)
+     ::common/street      (:street item)
+     }
+    )
+  )
+
+(define-event FetchOperatorResponse [response]
+              {}
+              (let [address-billing (address-of-type 1 (:addresses response))
+                    address-visiting (address-of-type 2 (:addresses response))]
+                (-> app
+                    (assoc
+                      :ytj-response response
+                      :ytj-response-loading false
+                      :transport-operator-loaded? true
+                      )
+                    (assoc-in [:transport-operator ::t-operator/billing-address] address-billing)
+                    (assoc-in [:transport-operator ::t-operator/visiting-address] address-visiting))))
+
+(defn- send-fetch-ytj [app-state id]
+  (if id
+    (do
+      (comm/get! (str "fetch/ytj?company-id=" id)
+                 {:on-success (send-async! ->FetchOperatorResponse)
+                  :on-failure (send-async! ->FetchOperatorResponse)
+                  })
+      (assoc app-state :transport-operator-loaded? false
+                       :ytj-response-loading true))
+    app-state))
+
+(define-event FetchOperator [id]
+              {}
+              (->
+                app
+                (dissoc :ytj-response)
+                (send-fetch-ytj id)
+                ))
 
 (defrecord SelectOperator [data])
 (defrecord SelectOperatorForTransit [data])
@@ -104,6 +148,7 @@
     (let [operator-data (-> app
                             :transport-operator
                             form/without-form-metadata)]
+
       (comm/post! "transport-operator" operator-data {:on-success (send-async! ->SaveTransportOperatorResponse)
                                                       :on-failure (send-async! ->FailedTransportOperatorResponse)})
       app))

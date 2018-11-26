@@ -6,6 +6,7 @@
             [cljs-react-material-ui.icons :as ic]
             [ote.ui.common :refer [linkify ckan-iframe-dialog]]
             [ote.views.transport-operator :as to]
+            [ote.views.transport-operator-ytj :as to-ytj]
             [ote.views.front-page :as fp]
             [ote.app.controller.front-page :as fp-controller]
             [ote.views.transport-service :as t-service]
@@ -118,7 +119,7 @@
                     :front-page [fp/front-page e! app]
                     :own-services [fp/own-services e! app]
                     :transport-service [t-service/select-service-type e! app]
-                    :transport-operator [to/operator e! app]
+                    :transport-operator (if (flags/enabled? :open-ytj-integration) [to-ytj/operator-ytj e! app] [to/operator e! app]) ; TODO: ytj replaces old solution when ready
 
                     ;; Routes for the service form, one for editing an existing one by id
                     ;; and another when creating a new service
