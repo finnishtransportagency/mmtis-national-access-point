@@ -42,34 +42,36 @@
                      x))]
     (walk/postwalk walk-fn ytj-map)))
 
+(defn- compose-result [response]
+  (into
+    {:status (:status response)}
+    (-> response
+        :body
+        :results
+        first
+        (select-keys [:name :auxiliaryNames :businessId :addresses])
+        without-expired-items)))
+
 (defn fetch-by-company-id [company-id]
   (when (and (string? company-id) (re-matches #"[0-9-]{2,20}" company-id))
-    (let [url (str "https://avoindata.prh.fi/bis/v1?totalResults=false&maxResults=10&resultsFrom=0&businessId=" company-id)
+    (let [url (str "https://avoindata.prh.fi/bis/v1?totalResults=true&maxResults=10&resultsFrom=0&businessId=" company-id)
           response (try
                      (http-get url {:accept :json
                                     :as :json})
                      (catch clojure.lang.ExceptionInfo e
-                       ;; sadly clj-http wants to communicate status as excpetions
+                       ;; sadly clj-http wants to communicate status as exceptions
                        (-> e ex-data)))]
-      ;; (println "ytj fetch: got response" (pr-str response))
-      (if (and (-> response :status (= 200))
-               (-> response :body :totalResults str (= "1")))
-        (do
-          ;; (println "all is good")
-          (-> response
-                 :body
-                 :results
-                 first
-                 (select-keys [:name :auxiliaryNames :businessId :addresses])
-                 without-expired-items))
-        (do
-          ;; (println "all is not good - " (-> response :status (= 200)) (-> response :body pr-str ))
-          (log/info (str "YTJ respnse not ok, status: " (:status response))) ;; if 200, :totalResults was != 1
-          nil)))))
+      ;(log/debug "ytj fetch: got response" (pr-str response))
+      (if (or (-> response :status (not= 200))
+              (-> response :body :totalResults str (not= "1")))
+        (log/debug "YTJ: all is not good, status=" (-> response :status (= 200)) " body=" (-> response :body pr-str))
+        )
+       (compose-result response))))
 
 (defrecord YTJFetch [config]
   component/Lifecycle
   (start [{db :db http :http :as this}]
+    (log/debug "YTJ: starting")
     (assoc this ::stop
            (when (feature/feature-enabled? config :open-ytj-integration)
              ;; require authentication because we don't want to be an open proxy for PRH API (and also there may be rate limits)             
@@ -77,7 +79,7 @@
                             (routes                           
                              (GET "/fetch/ytj" [company-id]
                                   (let [r (fetch-by-company-id company-id)]
-                                    ;; (println "YTJ: sending as transit:" (pr-str r))
+                                    ;(println "YTJ: sending as transit:" (pr-str r))
                                     (http/transit-response r))))))))
   (stop [{stop ::stop :as this}]
     (when stop
