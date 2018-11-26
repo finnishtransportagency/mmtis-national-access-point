@@ -885,7 +885,10 @@ Voit myös piirtää toimialueen tai toimipisteen kartan piirtotyökalujen avull
  {:loading-routes "Palvelun reittejä ladataan."}
 
  :common-texts
- {:front-page-help-text "Et ole vielä kirjannut liikkumispalvelutietoja NAP-palveluun.
+ {:business-id-and-aux-names "Toiminimi ja aputoiminimet"
+  :business-id-contact-details "Toiminimien yhteiset yhteystiedot"
+  :fetch-from-ytj "Hae tiedot YTJ:stä"
+  :front-page-help-text "Et ole vielä kirjannut liikkumispalvelutietoja NAP-palveluun.
         Voit lisätä olemassaolevan palvelurajapintasi tai täyttää palvelusi olennaiset tiedot käyttämällä
         Liikenneviraston tähän tarkoitukseen kehittämää OTE-palvelua."
   :front-page-start-ote-query-header "Haluat tallentaa liikkumispalvelusi olennaisia tietoja?"
@@ -958,7 +961,10 @@ Voit myös piirtää toimialueen tai toimipisteen kartan piirtotyökalujen avull
   :minutes-placeholder "mm"
 
   :server-error "Virhe palvelinkutsussa. Jos ongelma jatkuu, ota yhteyttä tukeen."
+  :server-error-try-later "Ongelmia palvelussa. Yritä hetken kuluttua uudelleen."
+
   :forbidden "Käyttöoikeutesi eivät riitä sisällön katseluun."
+  :optionally-fill-manually "Vaihtoehtoisesti voit jatkaa tietojen syöttämistä käsin."
 
   :nap-data-license (:md "Tälle lomakkeelle täytetyt tiedot julkaistaan NAP-palvelussa avoimena datana. Julkaistujen tietojen lisenssi on [Creative Commons Nimeä 4.0 Kansainvälinen (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.fi).")
 
