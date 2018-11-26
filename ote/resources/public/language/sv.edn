@@ -881,7 +881,10 @@ Tjänsterna beskrivs var för sig på egen blankett. I exemplet fyller man i bå
  {:loading-routes "Laddar rutterna för tjänsten."}
 
  :common-texts
- {:front-page-help-text "Du har inte ännu sparat mobilitetstjänster i NAP-tjänsten.
+ {:business-id-and-aux-names "Toiminimi ja aputoiminimet"
+  :business-id-contact-details "Toiminimien yhteiset yhteystiedot"
+  :fetch-from-ytj "Hämta data från YTJ"
+  :front-page-help-text "Du har inte ännu sparat mobilitetstjänster i NAP-tjänsten.
         Voit lisätä olemassaolevan palvelurajapintasi tai täyttää palvelusi olennaiset tiedot käyttämällä
         Liikenneviraston tähän tarkoitukseen kehittämää OTE-palvelua."
   :front-page-start-ote-query-header "Haluat tallentaa liikkumispalvelusi olennaisia tietoja?"
@@ -954,7 +957,11 @@ Tjänsterna beskrivs var för sig på egen blankett. I exemplet fyller man i bå
   :minutes-placeholder "mm"
 
   :server-error "Fel i serveranropet. Om problemet fortsätter, kontakta NAP HelpDesk."
+  :server-error-try-later "Problem med tjänsten. Vänligen försök igen senare."
+
   :forbidden "Du har inte behörighet att visa innehållet."
+  :optionally-fill-manually "Alternativt kan du fortsätta att skriva in detaljer manuellt"
+  
   :nap-data-license (:md "Informationen Du ger i detta formulär publiceras i NAP-katalogen som öppen data med licensen [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.sv).")
 
   :save-user-success "Profil sparad"
