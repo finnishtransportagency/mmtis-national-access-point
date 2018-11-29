@@ -49,7 +49,7 @@
         :body
         :results
         first
-        (select-keys [:name :auxiliaryNames :businessId :addresses])
+        (select-keys [:name :auxiliaryNames :businessId :addresses :contactDetails])
         without-expired-items)))
 
 (defn fetch-by-company-id [company-id]
