@@ -876,9 +876,14 @@ You can also draw the operating area or point to the map with drawing tools. You
  {:loading-routes "Loading service routes."}
 
  :common-texts
- {:business-id-and-aux-names "Företagsnamn och hjälpnamn"
-  :business-id-contact-details "Kontaktuppgifter för företagsnamn"
+ {:business-id-and-aux-names "Company name and auxiliary names"
+  :contact-details-plural "Contact details for company and auxiliary names"
+  :contact-details "Contact details"
   :fetch-from-ytj "Fetch data from YTJ"
+  :check-your-input "Please check that the details you entered are correct."
+  :no-aux-names-for-business-id "There were no auxiliary business names for the business id."
+
+
   :front-page-help-text "You have not yet registered any transport services to NAP-service catalog.
         You can register an external interface about your service or essential data about your service by using
         the NAP-service which Finnish Transport Aggency has developed for this purpose."

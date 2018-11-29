@@ -886,8 +886,12 @@ Voit myös piirtää toimialueen tai toimipisteen kartan piirtotyökalujen avull
 
  :common-texts
  {:business-id-and-aux-names "Toiminimi ja aputoiminimet"
-  :business-id-contact-details "Toiminimien yhteiset yhteystiedot"
+  :contact-details-plural "Toiminimien yhteiset yhteystiedot"
+  :contact-details "Yhteystiedot"
   :fetch-from-ytj "Hae tiedot YTJ:stä"
+  :check-your-input "Ole hyvä ja arkista, että syötit tiedot oikein."
+  :no-aux-names-for-business-id "Y-tunnukselle ei löytynyt aputoiminimiä"
+
   :front-page-help-text "Et ole vielä kirjannut liikkumispalvelutietoja NAP-palveluun.
         Voit lisätä olemassaolevan palvelurajapintasi tai täyttää palvelusi olennaiset tiedot käyttämällä
         Liikenneviraston tähän tarkoitukseen kehittämää OTE-palvelua."

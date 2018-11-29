@@ -40,18 +40,48 @@
     )
   )
 
+(defn- filter-coll-type [type collection]
+  "Returns a filtered a collection of maps based on :type key"
+  (first (filter #(some (fn [pred] (pred %))
+                        [(comp #{type} :type)])
+                 collection)))
+
+(defn- preferred-contacts [types contacts]
+  "Returns a collection of contact maps, filtered by types defined in vector 'types'. Result is sorted according to order of the types"
+  (loop [[type & remaining] types
+         result []]
+    (if type
+      (let [match (:value (filter-coll-type type contacts))]
+        ;(.debug js/console "Contact match=" (clj->js match))
+        (recur remaining (if match (conj result match) result)))
+      (do
+        ;(.debug js/console "Contact result=" (clj->js result))
+        result)))
+  )
+
 (define-event FetchOperatorResponse [response]
               {}
               (let [address-billing (address-of-type 1 (:addresses response))
-                    address-visiting (address-of-type 2 (:addresses response))]
-                (-> app
-                    (assoc
-                      :ytj-response response
-                      :ytj-response-loading false
-                      :transport-operator-loaded? true
-                      )
-                    (assoc-in [:transport-operator ::t-operator/billing-address] address-billing)
-                    (assoc-in [:transport-operator ::t-operator/visiting-address] address-visiting))))
+                    address-visiting (address-of-type 2 (:addresses response))
+                    ytj-contact-phone (first (preferred-contacts ["Puhelin" "Telefon" "Telephone"] (:contactDetails response)))
+                    ytj-contact-gsm (first (preferred-contacts ["Matkapuhelin" "Mobiltelefon" "Mobile phone"] (:contactDetails response)))
+                    ;ytj-contact-email (first (preferred-contacts ["Matkapuhelin" "Mobiltelefon" "Mobile phone"] (:contactDetails response))) ;TODO: check ytj field types, does it return email?
+                    ytj-contact-web (first (preferred-contacts ["Kotisivun www-osoite" "www-adress" "Website address"] (:contactDetails response)))
+                    ]
+                (cond-> app
+                        true (assoc
+                               :ytj-response response
+                               :ytj-response-loading false
+                               :transport-operator-loaded? true
+                               :ytj-business-names (into [{:name (:name response)}] ; Company name first in list
+                                                         (:auxiliaryNames response))) ; Auxiliary names after company name)
+                        true (assoc-in [:transport-operator ::t-operator/billing-address] address-billing)
+                        true (assoc-in [:transport-operator ::t-operator/visiting-address] address-visiting)
+                        (and (not-empty ytj-contact-phone) (empty? (::t-operator/phone app))) (assoc-in [:transport-operator ::t-operator/phone] ytj-contact-phone)
+                        (and (not-empty ytj-contact-gsm) (empty? (::t-operator/gsm app))) (assoc-in [:transport-operator ::t-operator/gsm] ytj-contact-gsm)
+                        ;(and (not-empty ytj-contact-email) (empty? (::t-operator/email app))) (assoc-in [:transport-operator ::t-operator/email] ytj-contact-email)
+                        (and (not-empty ytj-contact-web) (empty? (::t-operator/homepage app))) (assoc-in [:transport-operator ::t-operator/homepage] ytj-contact-web)
+                )))
 
 (defn- send-fetch-ytj [app-state id]
   (if id

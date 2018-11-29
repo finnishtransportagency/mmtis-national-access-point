@@ -86,14 +86,14 @@
           :else
           {:name  :ytj-msq-query-error
            :type  :text-label
-           :label (tr [:common-texts :server-error])})
+           :label (tr [:common-texts :server-error-try-later])})
         )
 
       ; label composition for user instructions how to continue
       (when (and (:ytj-response state) (not= 200 status))
         {:name  :ytj-query-tip-whatnext
          :type  :text-label
-         :label (tr [:common-texts :optionally-fill-manually])})
+         :label (str (tr [:common-texts :check-your-input]) " " (tr [:common-texts :optionally-fill-manually]))})
       )))
 
 (defn- operator-exists? [_item]
@@ -104,8 +104,9 @@
   "Creates a napote form and resolves data to fields. Assumes expired fields are already filtered from ytj-response."
   (let [operator (:transport-operator state)
         response-ok? (= 200 (get-in state [:ytj-response :status]))
-        aux-names (get-in state [:ytj-response :auxiliaryNames])
-
+        status (get-in state [:ytj-response :status])
+        aux-names (:ytj-business-names state)
+        aux-names-found? (< 1 (count aux-names))
         ]
     (form/group
       {:label (tr [:common-texts :title-operator-basic-details])
@@ -115,25 +116,44 @@
        :card? false
        }
 
-      {:name ::t-operator/aux-names
-       :label (tr [:common-texts :business-id-and-aux-names])
-       ;:help
-       :type :checkbox-group
-       :show-option (fn [x] x)
-       :option-enabled? (complement operator-exists?)
-       :options (mapv :name aux-names)
-       :full-width? true
-       ;:container-class     "col-md-6"
-       :should-update-check form/always-update
-       :checkbox-group-style (if (< 0 (count aux-names)) ;Needed to hide also the checkbox group title when list is empty
-                               {}
-                               {:display "none"})}
+      {:name       :msg-business-id
+       :label      (if aux-names-found?
+                     (tr [:common-texts :business-id-and-aux-names])
+                     "Toiminimi")
+       :type       :text-label
+       :h-style    :h3
+       :max-length 70}
 
-      {:name ::business-id-contact-details
-       :label (tr [:common-texts :business-id-contact-details])
-       :type :text-label
+      (if response-ok?                                      ; Input field if not YRJ results, checkbox-group otherwise
+        {:name                ::t-operator/aux-names
+         ;:label
+         ;:help
+         :type                :checkbox-group
+         :show-option         (fn [x] x)
+         :option-enabled?     (complement operator-exists?)
+         :options             (mapv :name aux-names)
+         :full-width?         true
+         :should-update-check form/always-update
+         }
+        {:name       ::t-operator/name
+         :label      ""
+         :type       :string
+         :required?  true
+         :max-length 70})
+
+      (when (and response-ok? (= false aux-names-found?))
+        {:name :msg-no-aux-names-for-business-id
+         :label (tr [:common-texts :no-aux-names-for-business-id])
+         :type :text-label
+         :max-length 128})
+
+      {:name       :msg-business-id-contact-details
+       :label      (if aux-names-found?
+                     (tr [:common-texts :contact-details-plural])
+                     (tr [:common-texts :contact-details])
+                     )       :type       :text-label
        :max-length 128
-       :h-style :h3}
+       :h-style    :h3}
 
       {:name ::ote.db.transport-operator/billing-address
        :type :text-label

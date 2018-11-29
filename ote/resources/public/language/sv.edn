@@ -881,9 +881,13 @@ Tjänsterna beskrivs var för sig på egen blankett. I exemplet fyller man i bå
  {:loading-routes "Laddar rutterna för tjänsten."}
 
  :common-texts
- {:business-id-and-aux-names "Toiminimi ja aputoiminimet"
-  :business-id-contact-details "Toiminimien yhteiset yhteystiedot"
+ {:business-id-and-aux-names "Företagsnamn och hjälpnamn"
+  :contact-details-plural "Kontaktuppgifter för företagsnamn"
+  :contact-details "Kontaktuppgifter"
   :fetch-from-ytj "Hämta data från YTJ"
+  :check-your-input "Please check that the details you entered are correct."
+  :no-aux-names-for-business-id "Det fanns inga extra företagsnamn för id."
+
   :front-page-help-text "Du har inte ännu sparat mobilitetstjänster i NAP-tjänsten.
         Voit lisätä olemassaolevan palvelurajapintasi tai täyttää palvelusi olennaiset tiedot käyttämällä
         Liikenneviraston tähän tarkoitukseen kehittämää OTE-palvelua."
