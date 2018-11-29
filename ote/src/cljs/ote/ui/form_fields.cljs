@@ -867,7 +867,7 @@
              ^{:key i}
              [:div {:style {:display "flex" :padding-top "10px"}}
               [:span
-               [ui/checkbox {:id (str i "_" (name option))
+               [ui/checkbox {:id (str i "_" (str option))
                              :label      (when-not table? (show-option option))
                              :checked    checked?
                              :disabled   (not (option-enabled? option))
