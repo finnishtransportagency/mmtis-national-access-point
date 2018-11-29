@@ -1038,5 +1038,5 @@
 (defmethod field :text-label [{:keys [label style h-style]}]
   ;; Options
   ; :label Text for displaying
-  [:div (when style {:style style}) (if h-style [h-style label] label)]
+  [:div (when style {:style style}) (if h-style [h-style label] [:p label])]
   )
