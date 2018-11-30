@@ -9,6 +9,11 @@
             [ote.app.controller.common :refer [->ServerError]]
             [ote.db.common :as common]))
 
+; TODO: serialize ytj fetches? What if user back-forwards on UI, would old resp complete and mix up app state?
+
+(defn- strip-ytj-metadata [app]
+  (dissoc app :ytj-response :ytj-company-names))
+
 (define-event ToggleTransportOperatorDeleteDialog []
   {:path [:transport-operator :show-delete-dialog?]
    :app show?}
@@ -98,14 +103,14 @@
                         (not-empty ytj-company-names) (assoc-in [:transport-operator :company-names-selected] (filterv :name-nap-match ytj-company-names)))))
 
 (defn- send-fetch-ytj [app-state id]
+  "Takes app state and business id, initiates details fetch for id from YTJ. Returns a new app state."
   (if id
     (do
       (comm/get! (str "fetch/ytj?company-id=" id)
                  {:on-success (send-async! ->FetchYtjOperatorResponse)
                   :on-failure (send-async! ->FetchYtjOperatorResponse)
                   })
-      (assoc app-state :transport-operator-loaded? false
-                       :ytj-response-loading true))
+      (assoc app-state :ytj-response-loading true))
     app-state))
 
 (define-event FetchYtjOperator [id]
@@ -136,9 +141,11 @@
   CreateTransportOperator
   (process-event [_ app]
     (routes/navigate! :transport-operator)
-    (assoc app
-           :transport-operator {:new? true}
-           :services-changed? true))
+    (-> app
+        (strip-ytj-metadata)
+        (assoc
+               :transport-operator {:new? true}
+               :services-changed? true)))
 
   SelectOperator
   (process-event [{data :data} app]
@@ -166,26 +173,31 @@
 
   EditTransportOperator
   (process-event [{id :id} app]
+    (prn-str "EditTransportOperator")
     (if id
       (do
         (comm/get! (str "t-operator/" id)
                    {:on-success (send-async! ->EditTransportOperatorResponse)})
-        (assoc app
-               :transport-operator-loaded? false))
+        (-> app
+            (strip-ytj-metadata)
+            (assoc :transport-operator-loaded? false)))
       (do
-        (assoc app
-               :transport-operator-loaded? true))))
+        (assoc app :transport-operator-loaded? true))))
 
   EditTransportOperatorResponse
   (process-event [{response :response} app]
-       (assoc app
-              :transport-operator-loaded? true
-              :transport-operator response))
+    (let [business-id (get-in app [:transport-operator ::t-operator/business-id])]
+      (prn-str "EditTransportOperatorResponse")
+      (cond-> app
+              true (assoc :transport-operator response)
+              (not business-id) (assoc :transport-operator-loaded? true)
+              business-id (send-fetch-ytj business-id))))
 
   EditTransportOperatorState
   (process-event [{data :data} app]
     (update app :transport-operator merge data))
 
+  ; TODO: check what metadata to strip
   SaveTransportOperator
   (process-event [_ app]
     (let [operator-data (-> app

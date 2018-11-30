@@ -223,11 +223,11 @@
   (some? (:ytj-response state))
   )
 
-(defn- operator-form-options [e! state]
+(defn- operator-form-options [e! state show-actions?]
   {:name->label (tr-key [:field-labels])
    :update!     #(e! (to/->EditTransportOperatorState %))
    :footer-fn   (fn [data]
-                  (if (allow-manual-creation? state)
+                  (if show-actions?
                     [:div
                      [buttons/save {:on-click #(e! (to/->SaveTransportOperator))
                                     :disabled (form/disable-save? data)}
@@ -237,18 +237,16 @@
                       (tr [:buttons :delete-operator])]]
                     [:div]))})
 
-(defn- compose-form-groups [e! state]
-  (if (allow-manual-creation? state)
-    [(operator-selection-group e! state)
-     (operator-form-groups e! state)]
-    [(operator-selection-group e! state)]
-    )
-  )
-
 (defn operator-ytj [e! {operator :transport-operator :as state}]
   (e! (to/->EditTransportOperator (get-in state [:params :id])))
   (fn [e! {operator :transport-operator :as state}]
-    (let [form-options (operator-form-options e! state)]
+    (let [ show-id-entry? (empty? (get-in state [:params :id]))
+          show-details? (and (:transport-operator-loaded? state)
+                             (not (empty? (:ytj-response state))))
+          form-options (operator-form-options e! state show-details?)
+          form-groups (cond-> []
+                              show-id-entry? (conj (operator-selection-group e! state))
+                              show-details? (conj (operator-form-groups e! state)))]
       [:div
        [:div
         [:div
@@ -264,7 +262,7 @@
        [:div.row.organization-info (stylefy/use-style style-form/organization-padding)
         [form/form
          form-options
-         (compose-form-groups e! state)
+         form-groups
          (:transport-operator state)]]
 
        ])))
