@@ -96,18 +96,11 @@
          :label (str (tr [:common-texts :check-your-input]) " " (tr [:common-texts :optionally-fill-manually]))})
       )))
 
-(defn- operator-exists? [_item]
-  ;TODO: check from backend matching business ids
-  false)
-
 (defn- operator-form-groups [e! state]
   "Creates a napote form and resolves data to fields. Assumes expired fields are already filtered from ytj-response."
-  (let [operator (:transport-operator state)
-        response-ok? (= 200 (get-in state [:ytj-response :status]))
-        status (get-in state [:ytj-response :status])
-        aux-names (:ytj-business-names state)
-        aux-names-found? (< 1 (count aux-names))
-        ]
+  (let [response-ok? (= 200 (get-in state [:ytj-response :status]))
+        ytj-company-names (:ytj-company-names state)
+        ytj-company-names-found? (< 1 (count ytj-company-names))]
     (form/group
       {:label (tr [:common-texts :title-operator-basic-details])
        :columns 1
@@ -117,21 +110,21 @@
        }
 
       {:name       :msg-business-id
-       :label      (if aux-names-found?
+       :label      (if ytj-company-names-found?
                      (tr [:common-texts :business-id-and-aux-names])
                      "Toiminimi")
        :type       :text-label
        :h-style    :h3
        :max-length 70}
 
-      (if response-ok?                                      ; Input field if not YRJ results, checkbox-group otherwise
-        {:name                ::t-operator/aux-names
+      (if response-ok?                                      ; Input field if not YTJ results, checkbox-group otherwise
+        {:name                :company-names-selected
          ;:label
          ;:help
          :type                :checkbox-group
-         :show-option         (fn [x] x)
-         :option-enabled?     (complement operator-exists?)
-         :options             (mapv :name aux-names)
+         :show-option         :name
+         :option-enabled?     #(not (:name-nap-match %))
+         :options             ytj-company-names
          :full-width?         true
          :should-update-check form/always-update
          }
@@ -141,14 +134,14 @@
          :required?  true
          :max-length 70})
 
-      (when (and response-ok? (= false aux-names-found?))
+      (when (and response-ok? (not ytj-company-names-found?))
         {:name :msg-no-aux-names-for-business-id
          :label (tr [:common-texts :no-aux-names-for-business-id])
          :type :text-label
          :max-length 128})
 
       {:name       :msg-business-id-contact-details
-       :label      (if aux-names-found?
+       :label      (if ytj-company-names-found?
                      (tr [:common-texts :contact-details-plural])
                      (tr [:common-texts :contact-details])
                      )       :type       :text-label

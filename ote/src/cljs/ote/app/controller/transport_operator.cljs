@@ -46,42 +46,56 @@
                         [(comp #{type} :type)])
                  collection)))
 
-(defn- preferred-contacts [types contacts]
-  "Returns a collection of contact maps, filtered by types defined in vector 'types'. Result is sorted according to order of the types"
+(defn- preferred-ytj-contact [types contacts]
+  "Takes 'types' a vector of key names as strings in order of preference
+  'contacts' a collection of maps
+  and returns the value of the key in the first map which has the key"
   (loop [[type & remaining] types
          result []]
-    (if type
+    (if (and type (empty? result))
       (let [match (:value (filter-coll-type type contacts))]
         ;(.debug js/console "Contact match=" (clj->js match))
         (recur remaining (if match (conj result match) result)))
       (do
         ;(.debug js/console "Contact result=" (clj->js result))
-        result)))
-  )
+        result))))
+
+(defn- clean-company-name-keys [coll]
+  "Takes 'coll' a collection of ytj company names and removes all keys not relevant for creating a nap operator"
+  (select-keys coll [:name :name-nap-match]))
+
+(defn- tag-matching-nap-names [operators-ytj operators-nap]
+  "Takes 'operators-ytj' and marks each map whose :name matches with a map in 'operators-nap'"
+  ;(.debug js/console "tag-matching-nap-names ytj=" (clj->js operators-ytj) " \n nap=" (clj->js operators-nap))
+  (mapv #(clean-company-name-keys
+           (assoc % :name-nap-match (not (empty? (filter (comp #{(:name %)} :name) operators-nap)))))
+        operators-ytj))
 
 (define-event FetchOperatorResponse [response]
               {}
-              (let [address-billing (address-of-type 1 (:addresses response))
-                    address-visiting (address-of-type 2 (:addresses response))
-                    ytj-contact-phone (first (preferred-contacts ["Puhelin" "Telefon" "Telephone"] (:contactDetails response)))
-                    ytj-contact-gsm (first (preferred-contacts ["Matkapuhelin" "Mobiltelefon" "Mobile phone"] (:contactDetails response)))
-                    ;ytj-contact-email (first (preferred-contacts ["Matkapuhelin" "Mobiltelefon" "Mobile phone"] (:contactDetails response))) ;TODO: check ytj field types, does it return email?
-                    ytj-contact-web (first (preferred-contacts ["Kotisivun www-osoite" "www-adress" "Website address"] (:contactDetails response)))
-                    ]
+              (let [ytj-address-billing (address-of-type 1 (:addresses response))
+                    ytj-address-visiting (address-of-type 2 (:addresses response))
+                    ytj-contact-phone (first (preferred-ytj-contact ["Puhelin" "Telefon" "Telephone"] (:contactDetails response)))
+                    ytj-contact-gsm (preferred-ytj-contact ["Matkapuhelin" "Mobiltelefon" "Mobile phone"] (:contactDetails response))
+                    ;ytj-contact-email (first (preferred-ytj-contact ["Matkapuhelin" "Mobiltelefon" "Mobile phone"] (:contactDetails response))) ;TODO: check ytj field types, does it return email?
+                    ytj-contact-web (first (preferred-ytj-contact ["Kotisivun www-osoite" "www-adress" "Website address"] (:contactDetails response)))
+                    ytj-company-names (when (not-empty (:name response)) (tag-matching-nap-names
+                                                                           (into [{:name (:name response)}] (:auxiliaryNames response)) ; Insert company name first to checkbox list before aux names
+                                                                           (:transport-operators-with-services app)))]
                 (cond-> app
                         true (assoc
                                :ytj-response response
                                :ytj-response-loading false
-                               :transport-operator-loaded? true
-                               :ytj-business-names (into [{:name (:name response)}] ; Company name first in list
-                                                         (:auxiliaryNames response))) ; Auxiliary names after company name)
-                        true (assoc-in [:transport-operator ::t-operator/billing-address] address-billing)
-                        true (assoc-in [:transport-operator ::t-operator/visiting-address] address-visiting)
+                               :transport-operator-loaded? true)
+                        true (assoc-in [:transport-operator ::t-operator/billing-address] ytj-address-billing) ; User not allowed to edit address, ytj used always
+                        true (assoc-in [:transport-operator ::t-operator/visiting-address] ytj-address-visiting) ; User not allowed to edit address, ytj used always
                         (and (not-empty ytj-contact-phone) (empty? (::t-operator/phone app))) (assoc-in [:transport-operator ::t-operator/phone] ytj-contact-phone)
                         (and (not-empty ytj-contact-gsm) (empty? (::t-operator/gsm app))) (assoc-in [:transport-operator ::t-operator/gsm] ytj-contact-gsm)
-                        ;(and (not-empty ytj-contact-email) (empty? (::t-operator/email app))) (assoc-in [:transport-operator ::t-operator/email] ytj-contact-email)
+                        ;(and (not-empty ytj-contact-email) (empty? (::t-operator/email app))) (assoc-in [:transport-operator ::t-operator/email] ytj-contact-email) ;TODO: check how ytj returns email, if any
                         (and (not-empty ytj-contact-web) (empty? (::t-operator/homepage app))) (assoc-in [:transport-operator ::t-operator/homepage] ytj-contact-web)
-                )))
+                        (not-empty ytj-company-names) (assoc :ytj-company-names ytj-company-names)
+                        ; Set those ytj items selected which have a name match in nap:
+                        (not-empty ytj-company-names) (assoc-in [:transport-operator :company-names-selected] (filterv :name-nap-match ytj-company-names)))))
 
 (defn- send-fetch-ytj [app-state id]
   (if id
@@ -99,8 +113,7 @@
               (->
                 app
                 (dissoc :ytj-response)
-                (send-fetch-ytj id)
-                ))
+                (send-fetch-ytj id)))
 
 (defrecord SelectOperator [data])
 (defrecord SelectOperatorForTransit [data])
