@@ -71,7 +71,7 @@
        :label     (tr [:common-texts :fetch-from-ytj])
        :primary   true
        :secondary true
-       :on-click  #(e! (to/->FetchOperator (::t-operator/business-id operator)))
+       :on-click  #(e! (to/->FetchYtjOperator (::t-operator/business-id operator)))
        :disabled  (ytj-loading? state)
        }
 

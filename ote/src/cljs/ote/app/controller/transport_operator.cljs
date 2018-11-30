@@ -71,7 +71,7 @@
            (assoc % :name-nap-match (not (empty? (filter (comp #{(:name %)} :name) operators-nap)))))
         operators-ytj))
 
-(define-event FetchOperatorResponse [response]
+(define-event FetchYtjOperatorResponse [response]
               {}
               (let [ytj-address-billing (address-of-type 1 (:addresses response))
                     ytj-address-visiting (address-of-type 2 (:addresses response))
@@ -101,14 +101,14 @@
   (if id
     (do
       (comm/get! (str "fetch/ytj?company-id=" id)
-                 {:on-success (send-async! ->FetchOperatorResponse)
-                  :on-failure (send-async! ->FetchOperatorResponse)
+                 {:on-success (send-async! ->FetchYtjOperatorResponse)
+                  :on-failure (send-async! ->FetchYtjOperatorResponse)
                   })
       (assoc app-state :transport-operator-loaded? false
                        :ytj-response-loading true))
     app-state))
 
-(define-event FetchOperator [id]
+(define-event FetchYtjOperator [id]
               {}
               (->
                 app
