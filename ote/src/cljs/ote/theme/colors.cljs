@@ -15,11 +15,15 @@
 
 (def green-basic "#00AA00")
 (def red-basic "#DD0000")
+(def red-dark "#CF0000")
 (def orange-basic "#FF8800")
 (def white-basic "white")
 
-(def primary-text white-basic)
+(def negative-button red-basic)
+(def negative-text white-basic)
+(def negative-button-hover red-dark)
 (def primary blue)
+(def primary-text white-basic)
 (def primary-disabled gray200)
 (def primary-light blue-light)
 (def secondary gray900)
