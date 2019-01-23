@@ -9,6 +9,7 @@
             [ote.localization :refer [tr tr-key]]
             [ote.ui.form :as form]
             [ote.ui.form-fields :as form-fields]
+            [ote.ui.buttons :as buttons]
             [ote.ui.common :refer [linkify] :as common-ui]
             [ote.db.user :as user]
             [clojure.string :as str]))
@@ -24,9 +25,7 @@
                :update! #(e! (lc/->UpdateLoginCredentials %))
                :footer-fn (fn [data]
                             [:span.login-dialog-footer
-                             [ui/raised-button {:primary true
-                                                :on-click #(e! (lc/->Login))
-                                                :label (tr [:login :login-button])}]])}
+                             [buttons/save {:on-click #(e! (lc/->Login))} (tr [:login :login-button])]])}
     [(form/group
       {:expandable? false :columns 3 :layout :raw :card? false}
       {:name :email
