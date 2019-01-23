@@ -9,6 +9,7 @@
             [stylefy.core :as stylefy]
             [ote.style.form-fields :as style-form-fields]
             [ote.style.base :as style-base]
+            [ote.style.buttons :as style-buttons]
             [ote.ui.validation :as valid]
             [ote.time :as time]
             [ote.ui.buttons :as buttons]
@@ -832,13 +833,11 @@
      (when add-label
        [:div (stylefy/use-style style-base/button-add-row)
         [buttons/save (merge {:on-click #(update! (conj (or data []) {}))
-                              :label add-label
-                              :label-style style-base/button-label-style
                               :disabled (if add-label-disabled?
                                           (add-label-disabled? (last data))
                                           (values/effectively-empty? (last data)))}
                              (when (not (nil? id))
-                               {:id (str id "-button")}))]])]))
+                               {:id (str id "-button")})) add-label]])]))
 
 (defn- checkbox-container [update! table? label warning error style checked? disabled? on-click]
   [:div (when error (stylefy/use-style style-base/required-element))
@@ -1089,22 +1088,11 @@
           ""))]]))
 
 (defmethod field :external-button [{:keys [label on-click disabled primary secondary style element-id]}]
-  ;; Options
-  ; :label Button label text for displaying
-  ; :on-click On-click callback fn
-  ; :disabled Boolean property for disabling button
-  ; primary
-  ; secondary
-  [:div
-   [ui/raised-button
-    (merge
-      (when element-id {:id element-id})
-      {:label label
-       :primary primary
-       :secondary secondary
-       :on-click #(on-click)
-       :disabled disabled
-       :style style})]])
+  [buttons/save (merge
+                  (when element-id {:id element-id})
+                  {:on-click #(on-click)
+                   :disabled disabled})
+   label])
 
 (defmethod field :text-label [{:keys [label style h-style full-width?]}]
   ;; Options
