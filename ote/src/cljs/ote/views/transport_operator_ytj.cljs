@@ -47,13 +47,12 @@
       :open    true
       :title   (tr [:dialog :delete-transport-operator :title])
       :actions [(r/as-element
-                  [buttons/save
+                  [buttons/cancel
                    {:on-click #(e! toggle-dialog)}
                    (tr [:buttons :cancel])])
                 (r/as-element
-                  [buttons/cancel
+                  [buttons/delete
                    {:id "confirm-operator-delete"
-                    :icon      (ic/action-delete-forever)
                     :disabled  (if (empty? operator-services)
                                  false
                                  true)
