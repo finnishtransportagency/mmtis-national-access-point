@@ -685,13 +685,13 @@
   :basic-info-tooltip "Här fyller du i uppgifterna för företaget, sammanslutningen eller organisationen som du representerar."
   :contact-types-tooltip "Uppgifterna här är avsedda för dem som använder NAP-gränssnitten, inte för mobilitetstjänsternas slutanvändare."
   :ckan-description-tooltip "Beskrivningen av tjänsteproducenten görs för att de som använder NAP-informationen ska kunna bilda sig en bättre uppfattning om tjänsteproducenten. T.ex. \"Parasbussi Oy är ett bolag som idkar regelbunden linjebaserad trafik och beställningstrafik. Bolaget ägs av Björneborgs stadstrafik\"."
-  :help-ytj-integration-desc "Palveluntuottajan tiedot haetaan Yritys- ja yhteisötietojärjestelmästä (YTJ) Y-tunnuksen perusteella. Mikäli tiedoissa on virheitä tai puutteita, voit tehdä niihin muutoksia PRH:n ja Verohallinnon yhteisessä YTJ-palvelussa. YTJ-palvelussa tehdyt muutokset (esim. osoitemuutos tai uuden aputoiminimen rekisteröinti) näkyvät tällä sivulla sen jälkeen, kun ne on YTJ:n rekisteriin kirjattu."
-  :heading-operator-edit "Aiemmin ilmoitettujen palveluntuottajanimien muuttaminen"
-  :help-operator-edit "Olet aiemmin luonut NAP-palveluun yhden tai useamman palveluntuottajan, joiden nimet eivät vastaa Y-tunnukselle rekisteröityjä toiminimiä tai aputoiminimiä. Valitse alasvetovalikoista toiminimi, jolla haluat korvata aiemmin ilmoittamasi palveluntuottajan nimen."
-  :business-id-heading "Y-tunnus:"
-  :help-operator-edit-selection "Alla olevasta listasta näet Y-tunnukselle rekisteröidyn toiminimen ja aputoiminimet. Valitse listalta vain ne nimet, joiden alaisuudessa haluat julkaista liikkumispalveluita NAP:ssa."
-  :help-operator-contact-entry (:md "Alla olevat yhteystiedot ovat Y-tunnuskohtaisia, eli ne ovat **kaikille Y-tunnuksen alaisille toiminimille samat**. Yhteystiedot haetaan YTJ:stä, eikä niitä voi NAP:ssa muokata. Mikäli tiedoissa on virheitä tai puutteita, voit tehdä niihin muutoksia ja täydennyksiä PRH:n ja Verohallinnon yhteisessä YTJ-palvelussa. Tyhjien yhteystietokenttien osalta sinulla on kaksi vaihtoehtoa. 1) täydennä tiedot YTJ-palvelussa, jonka jälkeen ne ovat myös NAPin käytettävissä (suositeltavaa). 2) Täydennä tiedot suoraan alla oleviin lomakekenttiin (tiedot tallentuvat vain NAPiin, eivätkä edelleenkään ole YTJ:n rekisterissä).")
-  :help-operator-how-delete (:md "Voit poistaa palveluntuottajan tiedot NAP:sta napsauttamalla **Poista palveluntuottaja** -painiketta. Palveluntuottajan poistaminen on mahdollista, kun palveluntuottajalla ei ole enää julkaistuja palveluita NAP:ssa. Mikäli haluat poistaa palveluntuottajan, käy ensin poistamassa kaikki sille lisätyt palvelut **Omat palvelutiedot** -sivun kautta.")
+  :help-ytj-integration-desc "Tjänsteproducentens uppgifter hämtas ur Företags- och organisationsdatasystemet YTJ. Ifall uppgifterna är felaktiga eller bristfällga kan du göra ändringarna direkt i YTJ-systemet. Ändringarna du gjort i YTJ-systemet kommer sedan att synas på denna sida i NAP."
+  :heading-operator-edit "Ändring av tidigare uppgivna tjänsteproducentnamn"
+  :help-operator-edit "Du har tidigare i NAP-tjänsten skapat en eller flera tjänsteproducenter vars namn inte motsvarar de namn eller parallellnamn som registrerats i YTJ med detta FO-nummer. Välj i menyn det namn du vill använda för att ersätta tidigare uppgivet namn."
+  :business-id-heading "FO-nummer:"
+  :help-operator-edit-selection "I listan nedan ser du de namn som registrerats i YTJ-systemet. Välj de namn i listan du vill använda som tjänsteproducenter i NAP."
+  :help-operator-contact-entry (:md "Kontaktuppgifterna nedan **gäller för samtliga namn och parallellnamn som är registrerade under detta FO-nummer**. Kontaktuppgifterna är hämtade ur YTJ-systemet och de kan inte ändras i NAP. Ifall uppgifterna är felaktiga eller bristfällga kan du göra ändringarna direkt i YTJ-systemet. Ändringarna du gjort i YTJ-systemet kommer sedan att synas på denna sida i NAP. Vad gäller tomma fält för kontaktuppgifter finns två alternativ. 1) Komplettera uppgifterna i YTJ-systemet, varefter de kommer att synas på denna sida i NAP (rekommenderas). 2) Fyll i uppgifterna direkt i fälten nedan (uppgifterna sparas då endast i NAP, inte i YTJ-systemet.)")
+  :help-operator-how-delete (:md "Du kan ta bort tjänsteproducentens uppgifter ur NAP genom att klicka på **Ta bort tjänsteproducent** -knappen. Borttagning är möjlig endast ifall det inte finns publicerade tjänster i NAP under ifrågavarande FO-nummer. Ta först bort eventuella tjänster på sidan **Egna tjänsteuppgifter**")
   :help-about-ytj-link-desc "Företags- och organisationsdatasystemet (FODS)"
   :help-about-ytj-link "https://www.ytj.fi/sv/index/mikaonytj.html"
   :help-ytj-contact-change-link-desc "Anmäl ändringar på nätet"
@@ -1024,7 +1024,7 @@ Tjänsterna beskrivs var för sig på egen blankett. I exemplet fyller man i bå
 
   :delete-transport-operator
   {:title "Ta bort hela tjänsteproducenter?"
-   :title-base-view "Palveluntuottajan poistaminen"
+   :title-base-view "Ta bort tjänsteproducent"
    :confirm ["Vill du ta bort tjänsteproducenter \"" :name "\" slutgiltigt?"]}
 
   :navigation-prompt

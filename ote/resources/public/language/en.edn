@@ -678,15 +678,15 @@ You can also draw the operating area or point to the map with drawing tools. You
   :contact-types-tooltip "Phone and email -section information is meant for utilisers of NAP-interfaces - not to the end users (customers) of your transport service."
   :ckan-description-tooltip "The purpose of the transport operator description is to give NAP utilisers an idea about what kind of transport operator they are dealing with. E.g. Example Ltd. is a company conducting scheduled transport and charter traffic in Southern Finland."
   :help-ytj-integration-desc "The service provider information is received from the Business Information System (BIS) on the basis of the Business ID. If the information is incorrect or incomplete, you can make changes to it in the _BIS service_. Changes made in the BIS service (e.g. changing the street address or registering a new auxiliary trade name) will appear on this page after they are registered in the BIS register."
-  :heading-operator-edit "Change the previously created service provider names"
-  :help-operator-edit "You have previously created one or more service providers in the NAP service, whose names do not match to the business name or auxiliary names registered to your Business ID. Please, select a name from the drop-down menu to replace the name of the service provider you have previously created."
-  :business-id-heading "Business id:"
+  :heading-operator-edit "Change previously created service provider names"
+  :help-operator-edit "In the list below you can see the business name and auxiliary names registered to your Business ID. Please, select only the names from the list which to you want to release services in the NAP service."
+  :business-id-heading "Business ID:"
   :help-operator-edit-selection "In the list below you can see the business name and auxiliary names registered to your Business ID. Please, select only the names from the list which to you want to release services in the NAP service."
-  :help-operator-contact-entry (:md "The contact information below are Business ID specific, which means that they are the **same for the Business name and for every auxiliary name**. Contact information is retrieved from the BIS and can not be edited in the NAP service. If there are any errors or omissions in the information, you can make changes to it in the BIS service. For empty contact fields, you have two choices. 1) Complete the information to the BIS register, after which they are also available in the NAP service (recommended). 2) Complete the information directly into the form fields below (the information given will be stored only in the NAP service - it  will not transfer to the BIS register).")
-  :help-operator-how-delete (:md "To remove the service provider information from the NAP service, click the **Delete service provider** -button. Deleting the service provider is possible only when service provider doesen't have any published services in the NAP service. If you want to delete the service provider, please, first delete all the transport services on the **Own transport services** page.")
+  :help-operator-contact-entry (:md "The contact information below are Business ID specific, which means that they are the **same for the Business name and for every auxiliary name**. Contact information is retrieved from the BIS register and cannot be edited in the NAP service. If there are any errors or omissions in the information, you can make changes to it in the BIS service. For empty contact fields, you have two choices. 1) Complete the information to the BIS register, after which they are also available in the NAP service (recommended). 2) Complete the information directly into the form fields below (the information given will be stored only in the NAP service - it  will not transfer to the BIS register).")
+  :help-operator-how-delete (:md "For removing the service provider information from the NAP service, click the **Delete service provider** button. Deleting the service provider is possible only when service provider doesn't have any published services in the NAP service. If you want to delete the service provider, please, first delete all the transport services on the **Own transport services** page.")
   :help-about-ytj-link-desc "Read more about Business Information System (BIS)"
   :help-about-ytj-link "https://www.ytj.fi/en/index/whatisbis.html"
-  :help-ytj-contact-change-link-desc "Change details of your business online"
+  :help-ytj-contact-change-link-desc "Change details of your business in the Business Information System (BIS)"
   :help-ytj-contact-change-link "https://www.ytj.fi/en/index/notifications/notificationsofchanges.html"
   :merge-operator-to-ytj "will be renamed as"
   }
@@ -922,7 +922,7 @@ You can also draw the operating area or point to the map with drawing tools. You
  {:loading-routes "Loading service routes."}
 
  :common-texts
- {:check-your-input "Please check that the details you entered are correct."
+ {:check-your-input "Please check that the information you have given is correct."
   :front-page-help-text "You have not yet registered any transport services to NAP-service catalog.
         You can register an external interface about your service or essential data about your service by using
         the NAP-service which is developed for this purpose."
@@ -1020,7 +1020,7 @@ You can also draw the operating area or point to the map with drawing tools. You
 
   :delete-transport-operator
   {:title "Want to delete a transport operator?"
-   :title-base-view "Palveluntuottajan poistaminen"
+   :title-base-view "Deleting of the service provider"
    :confirm ["Are you sure you want to delete operator named \"" :name "\" permanently?"]}
 
   :navigation-prompt
