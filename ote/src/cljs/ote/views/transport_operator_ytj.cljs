@@ -47,21 +47,18 @@
       :open    true
       :title   (tr [:dialog :delete-transport-operator :title])
       :actions [(r/as-element
-                  [ui/flat-button
-                   {:label    (tr [:buttons :cancel])
-                    :primary  true
-                    :on-click #(e! toggle-dialog)}])
+                  [buttons/save
+                   {:on-click #(e! toggle-dialog)}
+                   (tr [:buttons :cancel])])
                 (r/as-element
-                  [ui/raised-button
+                  [buttons/cancel
                    {:id "confirm-operator-delete"
-                    :label     (tr [:buttons :delete])
                     :icon      (ic/action-delete-forever)
-                    :secondary true
-                    :primary   true
                     :disabled  (if (empty? operator-services)
                                  false
                                  true)
-                    :on-click  #(e! (to/->DeleteTransportOperator (::t-operator/id operator)))}])]}
+                    :on-click  #(e! (to/->DeleteTransportOperator (::t-operator/id operator)))}
+                   (tr [:buttons :delete])])]}
      [:div
       (if (empty? operator-services)
         (tr [:dialog :delete-transport-operator :confirm] {:name (::t-operator/name operator)})
@@ -353,34 +350,35 @@
     (tr [:buttons :next])]])
 
 (defn- operator-form-options [e! state show-actions?]
-  {:name->label     (tr-key [:field-labels])
-   :update!         #(e! (to/->EditTransportOperatorState %))
-   :footer-fn       (fn [data]
-                      [:div {:style style-form/action-control-section-margin}
-                       [:div
-                        (when show-actions?
-                          [buttons/save {:id "btn-operator-save"
-                                         :on-click #(e! (to/->SaveTransportOperator))
-                                         :disabled (form/disable-save? data)}
-                           (tr [:buttons :save])])
+  {:name->label (tr-key [:field-labels])
+   :update! #(e! (to/->EditTransportOperatorState %))
+   :footer-fn (fn [data]
+                [:div {:style style-form/action-control-section-margin}
+                 [:div
+                  (when show-actions?
+                    [buttons/save {:id "btn-operator-save"
+                                   :on-click #(e! (to/->SaveTransportOperator))
+                                   :disabled (form/disable-save? data)}
+                     (tr [:buttons :save])])
 
-                        [buttons/save {:on-click #(e! (to/->CancelTransportOperator))}
-                         (tr [:buttons :cancel])]]
-                       (when (and show-actions? (empty? (:ytj-company-names state)))
-                         (when (not (get-in state [:transport-operator :new?]))
-                           [:div
-                            [:br]
-                            [ui/divider]
-                            [:br]
-                            [:div [:h3 (tr [:dialog :delete-transport-operator :title-base-view])]]
-                            [info/info-toggle (tr [:common-texts :instructions]) (tr [:organization-page :help-operator-how-delete]) true]
-                            [buttons/save {:on-click #(e! (to/->ToggleSingleTransportOperatorDeleteDialog))
-                                           :disabled (if (and
-                                                           (empty? (:transport-service-vector state))
-                                                           (::t-operator/id data))
-                                                       false
-                                                       true)}
-                             (tr [:buttons :delete-operator])]]))])})
+                  [buttons/cancel {:on-click #(e! (to/->CancelTransportOperator))}
+                   (tr [:buttons :cancel])]]
+
+                 (when (and show-actions? (empty? (:ytj-company-names state)))
+                   (when (not (get-in state [:transport-operator :new?]))
+                     [:div
+                      [:br]
+                      [ui/divider]
+                      [:br]
+                      [:div [:h3 (tr [:dialog :delete-transport-operator :title-base-view])]]
+                      [info/info-toggle (tr [:common-texts :instructions]) (tr [:organization-page :help-operator-how-delete]) true]
+                      [buttons/save {:on-click #(e! (to/->ToggleSingleTransportOperatorDeleteDialog))
+                                     :disabled (if (and
+                                                     (empty? (:transport-service-vector state))
+                                                     (::t-operator/id data))
+                                                 false
+                                                 true)}
+                       (tr [:buttons :delete-operator])]]))])})
 
 (defn operator-ytj [e! {operator :transport-operator :as state}]
   (let [show-id-entry? (empty? (get-in state [:params :id]))
