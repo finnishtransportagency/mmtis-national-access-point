@@ -135,16 +135,6 @@ In order to our OTE menu to render correctly work, we need to reset margin and p
     background-color: rgba(58, 57, 57, 0.1);
 }
 
-
-/* Global link color */
-.wrapper a {
-    color: #2D75B4;
-    text-decoration: none;
-}
-.wrapper a:hover {
-    color: #2D75B4;
-    text-decoration: underline;
-}
 .background-color {
     background: #3db7e4
 }
