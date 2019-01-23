@@ -3,8 +3,10 @@
 (def blue "#0048c2")
 (def blue-light "#0052dd")
 
-(def gray100 "#F0F0F0")
-(def gray200 "#E6E6E6")
+(def gray100 "#646464")
+(def gray200 "#C8C8C8")
+(def gray230 "#e6e6e6")
+(def gray240 "#f0f0f0")
 (def gray300 "#E0E0E0")
 (def gray400 "#CCC")
 (def gray500 "#969696")
@@ -14,12 +16,13 @@
 (def green-basic "#00AA00")
 (def red-basic "#DD0000")
 (def orange-basic "#FF8800")
+(def white-basic "white")
 
+(def primary-text white-basic)
 (def primary blue)
+(def primary-disabled gray200)
 (def primary-light blue-light)
 (def secondary gray900)
 (def progress primary)
 (def success green-basic)
 (def warning red-basic)
-
-

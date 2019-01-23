@@ -32,14 +32,6 @@
 (def icon-large {:width 32 :height 32
                  :vertical-align "middle"})
 
-(def base-button {:padding-left "1.1em"
-                  :padding-right "1.1em"
-                  :text-transform "uppercase"
-                  :color "#FFFFFF"
-                  :background-color "#1565C0"
-                  :font-size "12px"
-                  :font-weight "bold"})
-
 (def blue-link-with-icon {:color colors/primary
                           :text-decoration "none"
                           :margin-bottom "1px"
@@ -51,9 +43,21 @@
                           ::stylefy/mode {:hover {:border-bottom (str "1px solid " colors/primary)
                                                   :margin-bottom "-1px"}}})
 
+(def base-button (merge
+                   {:padding-left "1.1em"
+                         :padding-right "1.1em"
+                         :text-transform "uppercase"
+                         :color "#FFFFFF"
+                         :background-color "#1565C0"
+                         :font-size "12px"
+                         :font-weight "bold"}
+                   blue-link-with-icon))
+
 (def delete-button (merge base-button {:background-color "rgb(221,0,0)"}))
 
-(def disabled-button (merge base-button {:background-color "#CCCCCC"}))
+
+(def disabled-control {:opacity 0.3
+                       :pointer-events "none"})
 
 (def button-label-style {:font-size "12px"
                          :font-weight "bold"
@@ -181,9 +185,6 @@
                        {:logo {:height "48px"
                                :width "48px"
                                :margin-bottom "8px"}}})
-
-(def disabled-control {:opacity 0.3
-                       :pointer-events "none"})
 
 (def disabled-color {:color "rgba(0, 0, 0, 0.247059)"})
 (def checkbox-label {:float "left"
