@@ -4,7 +4,7 @@
 
 
 (def info-button
-  {:background-color colors/gray200
+  {:background-color colors/gray230
    :width "100%"
    :padding "1rem"
    :border "none"
@@ -24,7 +24,7 @@
    :margin-right "0.5rem"})
 
 (def info-text
-  {:background-color colors/gray100
+  {:background-color colors/gray240
    :transform-origin "top"
    :display "block"
    :margin 0
