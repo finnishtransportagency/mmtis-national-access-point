@@ -5,40 +5,35 @@
             [stylefy.core :as stylefy]
             [ote.style.base :as style-base]
             [ote.style.buttons :as style-buttons]
+            [ote.style.buttons :as style-btns]
             [ote.ui.common :as common]))
-
 
 (defn- button-container [button]
   [:div (stylefy/use-style style-base/action-button-container)
    button])
 
 (defn save [opts label]
-  [button-container [ui/raised-button
-                     (merge opts
-                            (if (:disabled opts)
-                              {:button-style style-base/disabled-button :disabled true}
-                              {:button-style style-base/base-button}))
-                     label]])
-
-(defn delete [opts label]
-  [button-container [ui/raised-button
-                     (merge opts
-                            (if (:disabled opts)
-                              {:button-style style-base/disabled-button :disabled true}
-                              {:button-style style-base/delete-button}))
-                     label]])
+  [button-container
+   [:button (merge opts
+                   (if (:disabled opts)
+                     (stylefy/use-style style-btns/disabled-button)
+                     (stylefy/use-style style-btns/primary-button)))
+    label]])
 
 (defn cancel [opts label]
   [button-container
-   [ui/flat-button
-    (merge {:style {:padding-left "1.1em"
-                    :padding-right "1.1em"
-                    :text-transform "uppercase"
-                    :color (color :blue700)
-                    :font-size "12px"
-                    :font-weight "bold"}} opts)
+   [:button (merge opts
+                   (if (:disabled opts)
+                     (stylefy/use-style style-btns/disabled-button)
+                     (stylefy/use-style style-btns/outline-button)))
     label]])
 
+(defn delete [opts label] ;; TODO: this could be removed after :open-ytj-integration taken into use
+  [button-container
+   [:button (merge opts
+                   (if (:disabled opts)
+                     (stylefy/use-style style-btns/disabled-button)
+                     (stylefy/use-style style-btns/primary-button))) label]])
 (defn open-link
   "Create button like linkify link"
   [url label]
