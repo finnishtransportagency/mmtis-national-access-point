@@ -39,17 +39,13 @@
       {:open true
        :title (tr [:dialog :delete-transport-service :title])
        :actions [(r/as-element
-                   [ui/flat-button
-                    {:label (tr [:buttons :cancel])
-                     :primary true
-                     :on-click #(e! (admin/->CancelDeleteTransportService id))}])
+                   [buttons/cancel
+                    {:on-click #(e! (admin/->CancelDeleteTransportService id))}
+                    (tr [:buttons :cancel])])
                  (r/as-element
-                   [ui/raised-button
-                    {:label (tr [:buttons :delete])
-                     :icon (ic/action-delete-forever)
-                     :secondary true
-                     :primary true
-                     :on-click #(e! (admin/->ConfirmDeleteTransportService id))}])]}
+                   [buttons/delete
+                    {:on-click #(e! (admin/->ConfirmDeleteTransportService id))}
+                    (tr [:buttons :delete])])]}
       (tr [:dialog :delete-transport-service :confirm] {:name name})])])
 
 (defn data-item [icon item]
