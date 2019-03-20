@@ -188,6 +188,8 @@
                 [l r (trip-stop-differences l r)])
               combined-trips)))))
 
+
+;; note: when enabling/testing this version, also change first-different-day to return first-non-nil-in-either index when comparing all-nil week with not-all-nil week
 #_(defn week=
   "Compare week hashes. Returns true if they represent the same traffic
   (excluding no-traffic days and static-holidays).
