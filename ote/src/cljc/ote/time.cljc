@@ -144,6 +144,12 @@
         ::minutes (.getMinuteOfHour this)
         ::seconds (.getSecondOfMinute this)})
 
+     org.joda.time.LocalDate
+     (date-fields [this]
+       {::date (.getDayOfMonth this)
+        ::month (.getMonthOfYear this)
+        ::year (.getYear this)})
+
      java.sql.Date
      (date-fields [this]
        (date-fields (.toLocalDate this)))))
@@ -389,6 +395,15 @@
          (when (t/before? start end)
            (date-range (t/plus start (t/days 1)) end)))))
 
+
+(defn java-localdate->inst [ld]
+  (date-fields->native
+   (merge {::hours 0 ::minutes 0 ::seconds 0}
+          (date-fields ld))))
+
+(defn java-localdate->joda-date-time [ld]
+  (native->date-time (java-localdate->inst ld)))
+
 (def week-days [:monday :tuesday :wednesday :thursday :friday :saturday :sunday])
 (def week-day-order {:monday 0 :tuesday 1 :wednesday 2 :thursday 3 :friday 4 :saturday 5 :sunday 6})
 
@@ -401,6 +416,11 @@
     5 :friday
     6 :saturday
     7 :sunday))
+
+(defn joda-datetime->java-localdate [joda-dt]
+  (let [str-dt (format-date-iso-8601 joda-dt)
+        java-ld (java.time.LocalDate/parse str-dt)]
+    java-ld))
 
 (defn native->date-time
   "Convert a platform native Date object to clj(s)-time.
