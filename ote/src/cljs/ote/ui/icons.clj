@@ -7,7 +7,7 @@
     `(defn ~fn-name
        ([] (~fn-name {}))
        ([style#]
-        [cljs-react-material-ui.core/font-icon {:class-name "material-icons"
+        [ote.mui-wrapper.core/font-icon {:class-name "material-icons"
                                                 :style style#}
          ~name]))))
 

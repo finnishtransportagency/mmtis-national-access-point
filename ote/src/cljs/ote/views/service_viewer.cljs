@@ -1,7 +1,7 @@
 (ns ote.views.service-viewer
   (:require [ote.time :as time]
             [stylefy.core :as stylefy]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [clojure.string :as string]
             [clojure.spec.alpha :as s]
             [ote.ui.leaflet :as leaflet]

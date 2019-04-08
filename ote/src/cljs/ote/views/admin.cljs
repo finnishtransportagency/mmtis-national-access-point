@@ -1,10 +1,10 @@
 (ns ote.views.admin
   "Admin panel views. Note this has a limited set of users and is not
   currently localized, all UI text is in Finnish."
-  (:require [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.core :refer [color]]
+  (:require [ote.mui-wrapper.reagent :as ui]
+            [ote.mui-wrapper.core :refer [color]]
             [clojure.string :as str]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [reagent.core :as r]
             [stylefy.core :as stylefy]
 

@@ -4,7 +4,7 @@
             [ote.app.controller.route.route-wizard :as rw]
             [ote.db.transport-operator :as t-operator]
             [ote.db.transit :as transit]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.localization :refer [tr tr-key]]
             [ote.ui.validation :as validation]))
 

@@ -1,7 +1,7 @@
 (ns ote.views.register
   "OTE registration form page."
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.ui.form :as form]
             [ote.app.controller.login :as lc]
             [ote.localization :refer [tr tr-key]]

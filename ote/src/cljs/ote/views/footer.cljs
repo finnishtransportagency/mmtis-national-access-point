@@ -3,7 +3,7 @@
   (:require [ote.style.base :as style-base]
             [ote.localization :refer [tr tr-key] :as localization]
             [ote.ui.common :refer [linkify ckan-iframe-dialog]]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [stylefy.core :as stylefy]
             [ote.style.front-page :as style-front-page]
             [ote.app.controller.front-page :as fp-controller]))

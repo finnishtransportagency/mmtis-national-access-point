@@ -1,14 +1,14 @@
 (ns ote.ui.service-calendar-timeline
   ""
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [cljs-time.core :as t]
             [cljs-time.format :as time-format]
             [ote.localization :as lang]
             [ote.db.transport-service :as t-service]
             [stylefy.core :as stylefy]
             [ote.time :as time]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [goog.events :as events]
             [goog.events.EventType :as EventType]
             [goog.events.MouseWheelHandler.EventType :as MEventType]))

@@ -1,7 +1,7 @@
 (ns ote.views.transit-visualization
   "Visualization of transit data (GTFS)."
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [ote.ui.icon_labeled :as icon-l]
             [stylefy.core :as stylefy]
             [ote.style.transit-changes :as style]
@@ -13,7 +13,7 @@
             [taoensso.timbre :as log]
             [ote.time :as time]
             [cljs-time.core :as t]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.ui.table :as table]
             [ote.db.transport-service :as t-service]
             [ote.localization :refer [tr]]

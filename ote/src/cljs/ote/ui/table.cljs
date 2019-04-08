@@ -1,11 +1,10 @@
 (ns ote.ui.table
   "Simple Material UI data table"
-  (:require [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.core :refer [color]]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.ui.common :as common]
             [ote.style.table :as table-style]
             [reagent.core :as r]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [ote.theme.colors :as colors]
             [ote.theme.transitions :as transitions]
             [stylefy.core :as stylefy]))

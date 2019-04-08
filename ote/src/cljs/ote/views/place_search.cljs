@@ -8,14 +8,14 @@
             [ote.ui.leaflet-draw :as leaflet-draw]
             [ote.ui.form :as form]
             [ote.localization :refer [tr tr-tree]]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.db.transport-service :as t-service]
             [ote.db.places :as places]
             [goog.object :as gobj]
             cljsjs.leaflet
             [stylefy.core :as stylefy]
             [ote.ui.common :as common]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [ote.style.base :as style-base]
             [ote.theme.screen-sizes :refer [width-xxs width-xs width-sm width-md width-l width-xl]]
             [clojure.string :as str]))

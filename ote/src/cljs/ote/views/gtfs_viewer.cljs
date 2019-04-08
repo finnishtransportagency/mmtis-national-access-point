@@ -2,7 +2,7 @@
   "GTFS viewer"
   (:require [ote.app.controller.gtfs-viewer :as gc]
             [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.gtfs.query :as gq]
             [clojure.string :as str]
             [ote.ui.table :as table]

@@ -2,8 +2,8 @@
   "Front page for OTE service - Select service type and other basic functionalities"
   (:require [clojure.string :as s]
             [reagent.core :as reagent]
-            [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.reagent :as ui]
+            [ote.mui-wrapper.icons :as ic]
             [ote.ui.icons :as icons]
             [ote.ui.common :refer [linkify ckan-iframe-dialog]]
             [ote.ui.form :as form]

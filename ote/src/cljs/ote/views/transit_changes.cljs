@@ -2,7 +2,7 @@
   "Transit changes view. Shows when regular route based traffic schedules
   change with links to detailed view (transit visualization)"
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.core :refer [color]]
+            [ote.mui-wrapper.core :refer [color]]
             [ote.ui.tabs :as tabs]
             [ote.ui.icons :as ui-icons]
             [ote.app.controller.transit-changes :as tc]
@@ -12,10 +12,10 @@
             [ote.time :as time]
             [cljs-time.core :as t]
             [ote.localization :refer [tr]]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.app.controller.front-page :as fp]
             [ote.views.pre-notices.authority-listing :as pre-notices-authority-listing]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [ote.style.transit-changes :as style]
             [stylefy.core :refer [use-style]]
             [stylefy.core :as stylefy]

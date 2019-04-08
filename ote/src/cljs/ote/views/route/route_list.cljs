@@ -2,9 +2,9 @@
   "List own routes"
   (:require
     [ote.localization :refer [tr tr-key]]
-    [cljs-react-material-ui.reagent :as ui]
+    [ote.mui-wrapper.reagent :as ui]
     [ote.app.controller.route.route-list :as route-list]
-    [cljs-react-material-ui.icons :as ic]
+    [ote.mui-wrapper.icons :as ic]
     [ote.views.transport-operator-selection :as t-operator-sel]
     [ote.app.controller.transport-operator :as to]
     [ote.db.transport-operator :as t-operator]

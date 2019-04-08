@@ -1,7 +1,7 @@
 (ns ote.ui.service-calendar-compact
   "Dense view for the service calendar component."
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [cljs-time.core :as t]
             [cljs-time.format :as time-format]
             [ote.localization :as lang]

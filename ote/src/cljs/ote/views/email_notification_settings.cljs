@@ -1,7 +1,7 @@
 (ns ote.views.email-notification-settings
   "Email notification settings"
   (:require [reagent.core :as reagent]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.ui.form :as form]
             [ote.db.user-notifications :as user-notifications]
             [ote.localization :refer [tr tr-key]]

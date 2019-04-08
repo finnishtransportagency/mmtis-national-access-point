@@ -1,7 +1,7 @@
 (ns ote.ui.page
   "Toplevel page components"
-  (:require [cljs-react-material-ui.icons :as ic]
-            [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.icons :as ic]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.localization :refer [tr tr-key]]
             [stylefy.core :as stylefy]
             [ote.style.base :as style-base]

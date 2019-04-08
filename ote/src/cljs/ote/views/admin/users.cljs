@@ -1,6 +1,6 @@
 (ns ote.views.admin.users
   "Admin User List"
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.ui.form-fields :as form-fields]
             [ote.app.controller.admin :as admin-controller]
             [ote.app.controller.front-page :as fp-controller]
@@ -8,7 +8,7 @@
             [ote.localization :refer [tr tr-key]]
             [ote.ui.common :refer [linkify]]
             [ote.time :as time]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [reagent.core :as r]
             [ote.ui.common :as common-ui]
             [ote.style.dialog :as style-dialog]))

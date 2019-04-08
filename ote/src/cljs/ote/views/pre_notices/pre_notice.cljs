@@ -1,7 +1,7 @@
 (ns ote.views.pre-notices.pre-notice
   "Pre notice main form"
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.localization :refer [tr tr-key]]
             [ote.app.controller.pre-notices :as pre-notice]
             [ote.ui.buttons :as buttons]
@@ -12,7 +12,7 @@
             [ote.db.transit :as transit]
             [ote.ui.form :as form]
             [ote.ui.common :as common]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [ote.style.form :as style-form]
             [stylefy.core :as stylefy]
             [ote.ui.leaflet :as leaflet]

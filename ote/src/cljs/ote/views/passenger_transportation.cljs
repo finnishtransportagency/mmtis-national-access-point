@@ -1,8 +1,8 @@
  (ns ote.views.passenger-transportation
   "Required datas for passenger transportation provider"
    (:require [reagent.core :as reagent]
-             [cljs-react-material-ui.reagent :as ui]
-             [cljs-react-material-ui.icons :as ic]
+             [ote.mui-wrapper.reagent :as ui]
+             [ote.mui-wrapper.icons :as ic]
              [ote.ui.form :as form]
              [ote.ui.form-groups :as form-groups]
              [ote.ui.buttons :as buttons]

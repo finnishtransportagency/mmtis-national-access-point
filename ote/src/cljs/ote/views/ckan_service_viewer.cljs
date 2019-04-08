@@ -13,7 +13,7 @@
             [ote.style.service-viewer :as style]
             [ote.app.controller.transport-service :as ts]
             [ote.ui.buttons :as buttons]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.ui.leaflet :as leaflet]
             [ote.views.theme :refer [theme]]
             [ote.views.place-search :as place-search]

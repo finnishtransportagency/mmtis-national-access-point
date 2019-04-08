@@ -1,8 +1,7 @@
 (ns ote.ui.buttons
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.localization :refer [tr tr-key]]
-            [cljs-react-material-ui.core :refer [color]]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [stylefy.core :as stylefy]
             [ote.style.base :as style-base]
             [ote.style.buttons :as style-buttons]

@@ -1,10 +1,10 @@
 (ns ote.views.transit-visualization.calendar
   "Calendar section in transit visualization page."
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [stylefy.core :as stylefy]
             [ote.time :as time]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.localization :refer [tr]]
             [ote.ui.icons :as ote-icons]
             [ote.ui.icon_labeled :as icon-l]

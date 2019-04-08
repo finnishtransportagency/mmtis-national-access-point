@@ -1,5 +1,5 @@
 (ns ote.ui.select_field
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.style.base :as style-base]
             [reagent.core :as r]))
 

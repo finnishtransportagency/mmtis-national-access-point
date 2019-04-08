@@ -1,8 +1,8 @@
 (ns ote.views.transport-operator-selection
   "Component for selecting a transport operator"
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.reagent :as ui]
+            [ote.mui-wrapper.icons :as ic]
 
             [ote.ui.common :as ui-common]
             [ote.ui.form-fields :as form-fields]

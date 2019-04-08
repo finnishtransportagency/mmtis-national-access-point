@@ -1,7 +1,7 @@
 (ns ote.views.transit-visualization.change_icons
   "Icons related to transit visualization."
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [stylefy.core :as stylefy]
             [ote.style.transit-changes :as style]
             [ote.app.controller.transit-visualization :as tv]

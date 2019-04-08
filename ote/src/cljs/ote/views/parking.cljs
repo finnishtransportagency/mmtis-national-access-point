@@ -1,8 +1,8 @@
 (ns ote.views.parking
   "Required data input fields for parking services"
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.reagent :as ui]
+            [ote.mui-wrapper.icons :as ic]
             [ote.ui.form :as form]
             [ote.ui.form-groups :as form-groups]
             [ote.ui.buttons :as buttons]

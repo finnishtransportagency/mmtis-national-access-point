@@ -2,9 +2,9 @@
   "OTE app startup"
   (:require [reagent.core :as r]
             [cljsjs.material-ui]
-            [cljs-react-material-ui.core :refer [get-mui-theme color]]
-            [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.core :refer [get-mui-theme color]]
+            [ote.mui-wrapper.reagent :as ui]
+            [ote.mui-wrapper.icons :as ic]
             [cljsjs.react-leaflet]
             [cljsjs.leaflet-draw]
             [cljsjs.nprogress]

@@ -1,6 +1,6 @@
 (ns ote.ui.list-header
   "Header component for OTE list pages"
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.ui.common :as common]
             [stylefy.core :as stylefy]
             [ote.style.base :as style-base]))

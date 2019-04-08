@@ -1,6 +1,6 @@
 (ns ote.ui.success_msg
   (:require [ote.localization :refer [tr tr-key]]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [ote.style.base :as style-base]
             [stylefy.core :as stylefy]))
 (defn success-msg [content]

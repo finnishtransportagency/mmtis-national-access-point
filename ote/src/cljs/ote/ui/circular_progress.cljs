@@ -1,5 +1,5 @@
 (ns ote.ui.circular_progress
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.style.base :as style-base]))
 
 (defn circular-progress [content]

@@ -1,6 +1,6 @@
 (ns ote.ui.mui-chip-input
   (:require material-ui-chip-input
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [reagent.core :as r]
             [clojure.string :as str]))
 
@@ -32,7 +32,7 @@
                                  :margin-bottom 14}
                     :listStyle {:width "auto"}})
 
-(def chip-input* (r/adapt-react-class (aget js/window "MaterialUIChipInput")))
+(def chip-input* (r/adapt-react-class (aget js/window "TextField")))
 
 (defn- auto-select [c orig-chip search-str dataSourceConfig js-handleAddChip]
   (let [autocomplete (aget c "autoComplete")

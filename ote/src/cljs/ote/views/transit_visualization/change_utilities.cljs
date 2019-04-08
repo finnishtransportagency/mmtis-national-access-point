@@ -1,7 +1,7 @@
 (ns ote.views.transit-visualization.change-utilities
   "Helper ui components for transit visualization."
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [stylefy.core :as stylefy]
             [ote.style.transit-changes :as style]
             [ote.app.controller.transit-visualization :as tv]

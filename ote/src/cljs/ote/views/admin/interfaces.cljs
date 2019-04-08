@@ -1,7 +1,7 @@
 (ns ote.views.admin.interfaces
   "Admin panel views. Note this has a limited set of users and is not
   currently localized, all UI text is in Finnish."
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.ui.form-fields :as form-fields]
             [ote.app.controller.admin :as admin-controller]
             [ote.db.transport-service :as t-service]
@@ -9,7 +9,7 @@
             [ote.localization :refer [tr tr-key]]
             [ote.ui.common :refer [linkify]]
             [ote.time :as time]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [reagent.core :as r]
             [ote.ui.common :as ui-common]
             [ote.ui.common :as common-ui]

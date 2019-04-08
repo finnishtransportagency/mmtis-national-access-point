@@ -1,6 +1,6 @@
 (ns ote.views.theme
-  (:require [cljs-react-material-ui.reagent :as ui]
-            [cljs-react-material-ui.core :refer [get-mui-theme color]]
+  (:require [ote.mui-wrapper.reagent :as ui]
+            [ote.mui-wrapper.core :refer [get-mui-theme color]]
             [ote.ui.nprogress :as progress]
             [stylefy.core :as stylefy]
             [ote.style.base :as style-base]
@@ -113,18 +113,18 @@
         {:mui-theme
          (get-mui-theme
           {:palette   {;; primary nav color - Also Focus color in text fields
-                       :primary1-color (color :blue700)
+                       :primary1-color ote.theme.colors/gray300
 
                        ;; label, hint and disabled color in text fields
-                       :disabledColor  (color :grey900)
+                       :disabledColor  ote.theme.colors/gray700
 
                        ;; Main text color
-                       :text-color     (color :grey900)
+                       :text-color     ote.theme.colors/gray900
                        }
 
            :button    {:labelColor "#fff"}
            ;; Change drop down list items selected color
-           :menu-item {:selected-text-color (color :blue700)}
+           :menu-item {:selected-text-color ote.theme.colors/primary}
 
            ;; Custom hint text color for all textfields
            :textField {:hintColor "rgba(0, 0, 0, 0.25)"}

@@ -1,7 +1,7 @@
 (ns ote.views.route
   "Main views for route based traffic views"
   (:require [reagent.core :as r]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [ote.app.controller.route.route-wizard :as rw]
             [ote.ui.buttons :as buttons]
             [ote.localization :refer [tr tr-key]]

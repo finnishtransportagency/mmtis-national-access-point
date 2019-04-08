@@ -7,12 +7,12 @@
             [ote.ui.common :as common]
             [cljs-time.core :as t]
             [clojure.string :as str]
-            [cljs-react-material-ui.reagent :as ui]
+            [ote.mui-wrapper.reagent :as ui]
             [reagent.core :as r]
             [ote.localization :refer [tr tr-key]]
             [stylefy.core :as stylefy]
             [ote.style.form :as style-form]
-            [cljs-react-material-ui.icons :as ic]))
+            [ote.mui-wrapper.icons :as ic]))
 
 (defonce keyword-counter (atom 0))
 

@@ -1,7 +1,7 @@
 (ns ote.views.admin.sea-routes
   "Admin panel views. Note this has a limited set of users and is not
   currently localized, all UI text is in Finnish."
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.app.controller.admin :as admin-controller]
             [clojure.string :as str]
             [ote.localization :refer [tr tr-key]]

@@ -1,10 +1,10 @@
 (ns ote.views.admin.detected-changes
   "Helper methods to help test and configure automatic traffic changes detection"
-  (:require [cljs-react-material-ui.reagent :as ui]
+  (:require [ote.mui-wrapper.reagent :as ui]
             [ote.app.controller.admin-transit-changes :as admin-transit-changes]
             [ote.localization :refer [tr tr-key]]
             [ote.ui.common :refer [linkify]]
-            [cljs-react-material-ui.icons :as ic]
+            [ote.mui-wrapper.icons :as ic]
             [reagent.core :as r]
             [stylefy.core :as stylefy]
             [ote.style.base :as style-base]
