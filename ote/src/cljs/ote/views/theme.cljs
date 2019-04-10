@@ -109,36 +109,14 @@
               navigation-confirm :navigation-confirm
               before-unload-message :before-unload-message
               :as app} content]
-       [ui/mui-theme-provider
-        {:mui-theme
-         (get-mui-theme
-          {:palette   {;; primary nav color - Also Focus color in text fields
-                       :primary1-color ote.theme.colors/gray300
 
-                       ;; label, hint and disabled color in text fields
-                       :disabledColor  ote.theme.colors/gray700
+       [:div
 
-                       ;; Main text color
-                       :text-color     ote.theme.colors/gray900
-                       }
-
-           :button    {:labelColor "#fff"}
-           ;; Change drop down list items selected color
-           :menu-item {:selected-text-color ote.theme.colors/primary}
-
-           ;; Custom hint text color for all textfields
-           :textField {:hintColor "rgba(0, 0, 0, 0.25)"}
-
-           ;; This determines the width of dialogs (12 * desktop-keyline-increment)
-           ;; original value is 64
-           :spacing {:desktop-keyline-increment 80}})}
-          [:div
-
-             (when error-msg
-               [flash-message-error e! error-msg])
-             (when (or msg (:logged_in query))
-                   [flash-message e! (or msg (tr [:common-texts :logged-in]))])
-             content
-             (when navigation-prompt-open?
-               [navigation-prompt e! before-unload-message navigation-confirm])
-             [debug-state app]]])})))
+        (when error-msg
+          [flash-message-error e! error-msg])
+        (when (or msg (:logged_in query))
+          [flash-message e! (or msg (tr [:common-texts :logged-in]))])
+        content
+        (when navigation-prompt-open?
+          [navigation-prompt e! before-unload-message navigation-confirm])
+        [debug-state app]])})))

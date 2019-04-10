@@ -45,7 +45,7 @@
                 (when class
                   {:class class}))
      [ui/table-header {:key (str random-table-id "-header")
-                       :style {:overflow "visible" :background-color (color :grey300)}
+                       :style {:overflow "visible" :background-color colors/gray300}
                        :adjust-for-checkbox false
                        :display-select-all false}
       [ui/table-row {:key (str random-table-id "-header-row")
@@ -61,7 +61,7 @@
                                           {:width width})
                                         {:white-space "pre-wrap"
                                          :overflow "visible"
-                                         :color (color :grey900)
+                                         :color colors/gray900
                                          :font-size "1em"
                                          :font-weight "bold"}
                                         label-style)}

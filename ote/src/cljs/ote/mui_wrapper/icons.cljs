@@ -1,9 +1,10 @@
 (ns ote.mui-wrapper.icons
-  (:require [ote.mui-wrapper.core :as m]
-            [cljsjs/material-ui-icons]))
+  (:require material-ui-icons
+    [ote.mui-wrapper.core :as m]))
 
-(def ^:private create-mui-icon (partial m/create-mui-cmp js/MaterialUIIcons))
+(defn ^:private create-mui-icon [& args] nil)
 
+;TODO: keep defn names with removed
 
 (defn action-accessibility [& args] (create-mui-icon "ActionAccessibility" args))
 (defn action-accessible [& args] (create-mui-icon "ActionAccessible" args))

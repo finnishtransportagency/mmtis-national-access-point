@@ -4,6 +4,8 @@
   (:require [rum.core]
             [ote.mui-wrapper.core]))
 
+;TODO useless
+
 (def selectable-list (ote.mui-wrapper.core/adapt-rum-class ((aget js/MaterialUI "makeSelectable") (aget js/MaterialUI "List"))))
 
 (def app-bar (ote.mui-wrapper.core/adapt-rum-class (aget js/MaterialUI "AppBar")))

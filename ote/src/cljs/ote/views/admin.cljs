@@ -2,7 +2,6 @@
   "Admin panel views. Note this has a limited set of users and is not
   currently localized, all UI text is in Finnish."
   (:require [ote.mui-wrapper.reagent :as ui]
-            [ote.mui-wrapper.core :refer [color]]
             [clojure.string :as str]
             [ote.mui-wrapper.icons :as ic]
             [reagent.core :as r]
