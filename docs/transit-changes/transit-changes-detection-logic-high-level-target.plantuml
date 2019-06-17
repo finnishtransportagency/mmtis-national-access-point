@@ -1,0 +1,33 @@
+@startuml
+title __Transit change day detection target logic__
+
+(*) --> Start
+
+if **All days analysed?**
+--> [Yes] (*)
+else
+    --> [No] "Get next day" as nd1
+    --> Resolve baseline day
+
+    if **Is day on "no-traffic" period?**
+    --> [Yes] nd1
+    else
+        if **Is day a holiday?**
+        --> [Yes] nd1
+        else
+            if **Is day traffic = baseline day traffic?**
+            --> [Yes] nd1
+            else
+                if **Is day traffic = baseline day traffic on 3rd week?**
+                --> [Yes] nd1
+                else
+                --> Compare traffic of \nday and baseline day
+                -->  Start
+                endif
+            endif
+        endif
+    endif
+endif
+
+
+@enduml
