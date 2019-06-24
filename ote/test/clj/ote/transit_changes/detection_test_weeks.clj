@@ -452,7 +452,7 @@
            (select-keys (first result) tu/select-keys-detect-changes-for-all-routes))
         "Ensure anomalous week is ignored and analysis starts from following week")
 
-    (is (= 1 (count result)) "Ensure that the right count of changes are found and there are no extra changes.")))                            ;; gets -22, should be nil
+    (is (= 1 (count result)) "Ensure that the right count of changes are found and there are no extra changes."))) ;; gets -22, should be nil
 
 (deftest test-traffic-static-holidays2
   (let [analysis-date (tu/to-local-date 2018 12 10)
@@ -603,7 +603,7 @@
 (deftest test-traffic-winter-to-summer-and-end
   (let [analysis-date (tu/to-local-date 2019 5 20)
         all-routes (tu/create-data-all-routes (list '(2019 5 13) '(2019 6 22)))
-        test-data (tu/weeks (tu/to-local-date 2019 5 13) ;; Test data adapted from production case
+        test-data (tu/weeks (tu/to-local-date 2019 5 13)    ;; Test data adapted from production case
                             (concat [{tu/route-name ["h1" "h2" "h3" "h4" "h5" "h6" "h7"]} ;; 2019-05-13
                                      {tu/route-name ["h1" "h2" "h3" "h4" "h5" "h6" "h7"]} ;; 2019-05-20
                                      {tu/route-name ["h1" "h2" "h3" "h4" "h5" "h6" "h7"]} ;; 2019-05-27
