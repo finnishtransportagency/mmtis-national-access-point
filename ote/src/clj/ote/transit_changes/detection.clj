@@ -749,7 +749,7 @@
                                 {:gtfs/change-type :added
                                  :gtfs/different-week-date (time/sql-date change-date)
                                  :gtfs/change-date (time/sql-date change-date)
-                                 :gtfs/current-week-date (time/sql-date (.plusDays change-date -1))}
+                                 :gtfs/current-week-date (time/sql-date (.minusDays change-date 1))}
 
                                 (= change-type :removed)
                                 {:gtfs/change-type :removed
@@ -759,7 +759,7 @@
                                                      nil
                                                      (time/sql-date change-date))
                                  :gtfs/different-week-date (time/sql-date change-date)
-                                 :gtfs/current-week-date (time/sql-date change-date)}
+                                 :gtfs/current-week-date (time/sql-date (.minusDays change-date 1))}
 
                                 (= change-type :changed)
                                 {:gtfs/change-type :changed
@@ -769,7 +769,7 @@
 
                                 (= change-type :no-traffic)
                                 {:gtfs/change-type :no-traffic
-                                 :gtfs/current-week-date (time/sql-date (.plusDays change-date -1))
+                                 :gtfs/current-week-date (time/sql-date (.minusDays change-date 1))
                                  :gtfs/different-week-date (time/sql-date change-date)
                                  :gtfs/change-date (time/sql-date change-date)}
 
