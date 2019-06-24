@@ -10,18 +10,22 @@
 
 (def history-columns #{:gtfs/change-key :gtfs/route-hash-id :gtfs/different-week-date})
 
-(defn create-change-key-from-change-data
+(defn append-change-key
   "Create change-key for changes which is kind of same what route-hash-id is for routes. It creates unique key to detect that changes
   are stored only once to db."
-  [change-data]
-  (let [relevant-keys #{:gtfs/removed-trips :gtfs/trip-stop-sequence-changes-lower
-                        :gtfs/trip-stop-sequence-changes-upper :gtfs/route-hash-id
-                        :gtfs/trip-stop-time-changes-lower :gtfs/trip-stop-time-changes-upper :gtfs/change-type
-                        :gtfs/added-trips :gtfs/different-week-date}
-        change-data (select-keys change-data relevant-keys)
-        change-data (into (sorted-map) change-data)         ;; Sort map by keys
-        change-key (digest/sha-256 (str change-data))]
-    (merge change-data {:gtfs/change-key change-key})))
+  [change-data-for-db]
+  (let [key-data (into (sorted-map)
+                       (select-keys change-data-for-db
+                                    #{:gtfs/removed-trips
+                                      :gtfs/trip-stop-sequence-changes-lower
+                                      :gtfs/trip-stop-sequence-changes-upper
+                                      :gtfs/route-hash-id
+                                      :gtfs/trip-stop-time-changes-lower
+                                      :gtfs/trip-stop-time-changes-upper
+                                      :gtfs/change-type
+                                      :gtfs/added-trips
+                                      :gtfs/different-week-date}))]
+    (merge change-data-for-db {:gtfs/change-key (digest/sha-256 (str key-data))})))
 
 (defn update-change-history
   "To be able to tell when change is detected at the first time, we need to store change results to the db."
@@ -34,7 +38,7 @@
                                                       ;; WHERE
                                                       {:gtfs/transport-service-id service-id}))
         service-changes (map
-                          #(create-change-key-from-change-data %)
+                          #(append-change-key %)
                           route-change-infos)
         unsaved-changes (remove
                           (fn [new-change]
