@@ -1236,7 +1236,7 @@ You can also draw the operating area or point to the map with drawing tools. You
   :exception "Exception description"}
 
  :user
- {:change-email-warning "Huom! Jos muokkaat sähköpostiosoitetta tulee sinun vahvistaa uusi sähköpostiosoite ennen kuin voit kirjautua uudelleen sisään."}
+ {:change-email-warning "Uusi sähköpostiosoite täytyy vahvistaa, ennen kuin voit kirjautua uudelleen sisään. Saat vahvistuksesta erillisen ohjeviestin sähköpostiisi tietojen tallentamisen jälkeen."}
 
  :register
  {:label "Register for an Account"

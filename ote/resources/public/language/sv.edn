@@ -1239,7 +1239,7 @@ Tjänsterna beskrivs var för sig på egen blankett. I exemplet fyller man i bå
   :exception "Undantag"}
 
  :user
- {:change-email-warning "Huom! Jos muokkaat sähköpostiosoitetta tulee sinun vahvistaa uusi sähköpostiosoite ennen kuin voit kirjautua uudelleen sisään."}
+ {:change-email-warning "Uusi sähköpostiosoite täytyy vahvistaa, ennen kuin voit kirjautua uudelleen sisään. Saat vahvistuksesta erillisen ohjeviestin sähköpostiisi tietojen tallentamisen jälkeen."}
 
  :register
  {:label "Skapa ett nytt konto"
