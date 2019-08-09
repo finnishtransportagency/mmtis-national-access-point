@@ -32,7 +32,7 @@
                        [:div {:style {:margin-top "1em"}}
                         (when (:email-changed? edit-response)
                           [:div {:style {:margin-bottom "2rem"}}
-                           [notification/notification {:text (str "Sähköpostiosoitteeseen: " (:new-email edit-response) " on lähetetty vahvistusviesti")
+                           [notification/notification {:text (str "Sähköpostiosoitteeseen " (:new-email edit-response) " on lähetetty vahvistusviesti")
                                                        :type :success}]])
                         [buttons/save {:on-click #(e! (lc/->SaveUser
                                                         (merge-user-data
