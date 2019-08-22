@@ -203,7 +203,7 @@
     (when-let [resp (get-in admin [:responses :pre-notice-notify])]
       [notification/notification
        (if (= :success resp)
-         {:type :success :text (str "Mahdolliset muutosilmoitusten sähköpostit lähetetty")}
+         {:type :success :text (str "Mahdollisten muutosilmoitusten lähettäminen käynnistetty ja valmistuu ilman ilmoitusta")}
          {:type :error :text (str "Mahdollisten muutosilmoitusten sähköpostien lähettäminen ei onnistunut. Virhetietoja: " resp)})])]
 
    [:br]
