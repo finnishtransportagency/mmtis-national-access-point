@@ -153,10 +153,11 @@
            ^{:key (str stop-idx "-arr")}
            [:td style
             [:div.col-md-11
-             [form-fields/field {:type    :time
+             [form-fields/field {:type :time
                                  :required? true
+                                 ;; Restricted because first departure cannot be before 24 hours.
                                  :unrestricted-hours? (> stop-idx 0)
-                                 :update! #(update! {::transit/arrival-time %})}
+                                 :update! #(update! {::transit/arrival-time (time/time->interval %)})}
               arrival-time]]
             [:div.col-md-1 {:style {:margin-left "-10px"}}
              [exception-icon e! :arrival drop-off-type stop-idx row-idx]]])
@@ -166,10 +167,11 @@
            ^{:key (str stop-idx "-dep")}
            [:td style
             [:div.col-md-11
-             [form-fields/field {:type    :time
+             [form-fields/field {:type :time
                                  :required? true
-                                 :unrestricted-hours? (> stop-idx 0)
-                                 :update! #(update! {::transit/departure-time %})}
+                                 ;; All arrival hours allowed because time between two stops could be 24h or more
+                                 :unrestricted-hours? true
+                                 :update! #(update! {::transit/departure-time (time/time->interval %)})}
               departure-time]]
             [:div.col-md-1 {:style {:margin-left "-10px"}}
              [exception-icon e! :departure pickup-type stop-idx row-idx]]]))))
