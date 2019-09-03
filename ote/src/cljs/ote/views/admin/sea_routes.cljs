@@ -1,4 +1,5 @@
-(ns ote.views.admin.sea-routes
+(ns
+  ote.views.admin.sea-routes
   "Admin panel views. Note this has a limited set of users and is not
   currently localized, all UI text is in Finnish."
   (:require [cljs-react-material-ui.reagent :as ui]
@@ -11,7 +12,8 @@
             [ote.ui.form-fields :as form-fields]
             [ote.db.transport-service :as t-service]
             [ote.db.transport-operator :as t-operator]
-            [ote.db.transit :as transit]))
+            [ote.db.transit :as transit]
+            [ote.ui.circular_progress :as circular]))
 
 (defn sea-routes-page-controls [e! app]
   [:div.row {:style {:padding-top "20px"}}
@@ -35,7 +37,8 @@
         loc (.-location js/document)]
      [:div.row {:style {:padding-top "40px"}}
       (when loading?
-        [:span "Ladataan merireittejä..."])
+        [circular/circular-progress
+         [:span "Ladataan merireittejä..."]])
 
       (when results
         [:div
