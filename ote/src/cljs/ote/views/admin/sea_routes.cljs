@@ -51,15 +51,15 @@
             ]]
           [ui/table-body {:display-row-checkbox false}
            (doall
-             (for [{::transit/keys [id name operator published?] :as sea-route} results]
-               ^{:key (str "link_" id)}
+             (for [{::transit/keys [route-id name operator published?] :as sea-route} results]
+               ^{:key (str "link_" route-id)}
                [ui/table-row {:selectable false}
                 [ui/table-row-column {:style {:width "30%"}} (::t-operator/name operator)]
                 [ui/table-row-column {:style {:width "40%"}} [:a {:href "#"
                                                                   :on-click #(do
                                                                                (.preventDefault %)
                                                                                (e! (admin-controller/->ChangeRedirectTo :admin))
-                                                                               (e! (fp/->ChangePage :edit-route {:id id})))}
+                                                                               (e! (fp/->ChangePage :edit-route {:id route-id})))}
                                                               (t-service/localized-text-with-fallback @selected-language name)]]
                 [ui/table-row-column {:style {:width "10%"}} (if published? "Kyllä" "Ei") ]
                 [ui/table-row-column {:style {:width "20%"}}
