@@ -22,15 +22,15 @@
     [ote.ui.buttons :as buttons]
     [ote.style.dialog :as style-dialog]))
 
-(defn- delete-route-action [e! {::transit/keys [id name]
+(defn- delete-route-action [e! {::transit/keys [route-id name]
                                   :keys [show-delete-modal?]
                                   :as route}]
   [:span
-   [ui/icon-button {:id       (str "delete-route-" id)
+   [ui/icon-button {:id       (str "delete-route-" route-id)
                     :href     "#"
                     :on-click #(do
                                  (.preventDefault %)
-                                 (e! (route-list/->OpenDeleteRouteModal id)))}
+                                 (e! (route-list/->OpenDeleteRouteModal route-id)))}
     [ic/action-delete]]
    (when show-delete-modal?
      [ui/dialog
@@ -41,13 +41,13 @@
                    [buttons/cancel
                     {:on-click #(do
                                   (.preventDefault %)
-                                  (e! (route-list/->CancelDeleteRoute id)))}
+                                  (e! (route-list/->CancelDeleteRoute route-id)))}
                     (tr [:buttons :cancel])])
                  (r/as-element
                    [buttons/delete
                     {:on-click  #(do
                                    (.preventDefault %)
-                                   (e! (route-list/->ConfirmDeleteRoute id)))}
+                                   (e! (route-list/->ConfirmDeleteRoute route-id)))}
                     (tr [:buttons :delete])])]}
 
       (str (tr [:route-list-page :delete-dialog-remove-route]) (t-service/localized-text-with-fallback @selected-language name))])])
@@ -70,16 +70,16 @@
     [ui/table-body {:display-row-checkbox false}
      (doall
        (map-indexed
-         (fn [i {::transit/keys      [id name published? available-from available-to
+         (fn [i {::transit/keys      [route-id name published? available-from available-to
                                       departure-point-name destination-point-name]
                  ::modification/keys [created modified] :as row}]
            ^{:key (str "route-" i)}
            [ui/table-row {:key (str "route-" i) :selectable false :display-border false}
             [ui/table-row-column {:style {:width "18%"}}
-             [:a {:href     "#"
+             [:a {:href "#"
                   :on-click #(do
                                (.preventDefault %)
-                               (e! (fp/->ChangePage :edit-route {:id id})))} (t-service/localized-text-with-fallback @selected-language name)]]
+                               (e! (fp/->ChangePage :edit-route {:id route-id})))} (t-service/localized-text-with-fallback @selected-language name)]]
             [ui/table-row-column {:class "hidden-xs hidden-sm " :style {:width "10%"}} (tr [:route-list-page :route-list-published?-values published?])]
             [ui/table-row-column {:style {:width "10%"}} (t-service/localized-text-with-fallback @selected-language departure-point-name)]
             [ui/table-row-column {:style {:width "10%"}} (t-service/localized-text-with-fallback @selected-language destination-point-name)]
@@ -87,10 +87,10 @@
             [ui/table-row-column {:style {:width "10%"}} (when available-to (time/format-date available-to))]
             [ui/table-row-column {:class "hidden-xs hidden-sm " :style {:width "15%"}} (time/format-timestamp-for-ui (or modified created))]
             [ui/table-row-column {:class "hidden-xs hidden-sm " :style {:width "13%"}}
-             [ui/icon-button {:href     "#"
+             [ui/icon-button {:href "#"
                               :on-click #(do
                                            (.preventDefault %)
-                                           (e! (fp/->ChangePage :edit-route {:id id})))}
+                                           (e! (fp/->ChangePage :edit-route {:id route-id})))}
               [ic/content-create]]
              [delete-route-action e! row]]])
          routes))]]])
