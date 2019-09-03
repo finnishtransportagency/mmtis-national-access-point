@@ -25,7 +25,7 @@
 (defn- update-route-by-id [app id update-fn & args]
   (update app :routes-vector
           (fn [services]
-            (map #(if (= (::transit/id %) id)
+            (map #(if (= (::transit/route-id %) id)
                     (apply update-fn % args)
                     %)
                  services))))
@@ -75,7 +75,7 @@
 
   DeleteRouteResponse
   (process-event [{response :response} app]
-    (let [filtered-map (filter #(not= (::transit/id %) (int response)) (get app :routes-vector))]
+    (let [filtered-map (filter #(not= (::transit/route-id %) (int response)) (get app :routes-vector))]
       (assoc app :routes-vector filtered-map
                  :flash-message (tr [:common-texts :delete-route-success])
                  :routes-changed? true)))
