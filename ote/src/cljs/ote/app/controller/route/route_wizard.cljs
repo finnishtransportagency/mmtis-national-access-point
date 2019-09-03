@@ -525,18 +525,21 @@
                                      time/minutes-from-midnight
                                      (- start-time)
                                      (+ new-start-time)
-                                     time/minutes-from-midnight->time))
-          update-times-from-new-start
-          #(-> %
-               (update ::transit/arrival-time time-from-new-start)
-               (update ::transit/departure-time time-from-new-start))]
+                                     time/minutes-from-midnight->time
+                                     time/time->interval))
+          stop-time-from-template #(-> %
+                                       (cond->
+                                         (some? (::transit/arrival-time %)) (update ::transit/arrival-time time-from-new-start)
+                                         (some? (::transit/departure-time %)) (update ::transit/departure-time time-from-new-start))
+                                       (dissoc ::transit/id ; Remove primary key(s) to avoid updating existing record
+                                               :transit-stop-time/stop-time-id))]
       (-> app
           (route-updated)
           (assoc-in [:route :new-start-time] nil)
           (update-in [:route ::transit/trips]
                      (fn [times]
                        (conj (or times [])
-                             {::transit/stop-times (mapv update-times-from-new-start
+                             {::transit/stop-times (mapv stop-time-from-template
                                                          (::transit/stop-times trip))
                               ::transit/service-calendar-idx (count (::transit/trips route))})))
           (update-in [:route ::transit/service-calendars]
