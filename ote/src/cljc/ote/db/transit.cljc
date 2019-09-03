@@ -31,11 +31,26 @@
   ["transit_service_rule" ::service-rule]
   ["transit_service_calendar" ::service-calendar]
   ["transit_stopping_type" ::stopping-type (specql.transform/transform (specql.transform/to-keyword))]
-  ["transit_stop_time" ::stop-time]
-  ["transit_trip" ::trip]
+  ["transit_route_stop_time" ::stop-time
+   {"id" :transit-stop-time/stop-time-id
+    "transit-trip-id" :transit-stop-time/trip-id}]
+  ["transit_route_trip" ::trip
+   {"id" :transit-trip/trip-id
+    "transit-route-id" :transit-trip/route-id}
+   {::stop-times (specql.rel/has-many
+                   :transit-trip/trip-id
+                   :ote.db.transit/stop-time
+                   :transit-stop-time/trip-id)}]
   ["transit_route" ::route
    ote.db.modification/modification-fields
-   {::operator (specql.rel/has-one ::transport-operator-id :ote.db.transport-operator/transport-operator :ote.db.transport-operator/id)}]
+   {"id" :ote.db.transit/route-id}
+   {::operator (specql.rel/has-one ::transport-operator-id
+                                   :ote.db.transport-operator/transport-operator
+                                   :ote.db.transport-operator/id)
+    ::trips (specql.rel/has-many
+              :ote.db.transit/route-id
+              :ote.db.transit/trip
+              :transit-trip/route-id)}]
 
   ["finnish_ports" ::finnish-ports
    ote.db.modification/modification-fields]
