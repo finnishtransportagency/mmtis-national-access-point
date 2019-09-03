@@ -207,7 +207,7 @@
 
 (defn- list-sea-routes [db user query]
   (specql/fetch db ::transit/route
-                #{::transit/id ::transit/transport-operator-id ::transit/name ::transit/published?
+                #{::transit/route-id ::transit/transport-operator-id ::transit/name ::transit/published?
                   [::transit/operator #{::t-operator/name ::t-operator/id}]}
                 {::transit/operator {::t-operator/name (op/ilike (str "%" query "%"))}}))
 
