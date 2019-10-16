@@ -9,7 +9,27 @@
     [clojure.java.shell :refer [sh with-sh-dir]]
     [clojure.string :as str]
     [amazonica.aws.s3 :as s3]
-    [ote.config.netex-config :as config-nt]))
+    [ote.config.netex-config :as config-nt]
+    [specql.op :as op]))
+
+(defn fetch-conversions [db transport-service-id]
+  (specql/fetch db
+                ::netex/netex-conversion
+                #{::netex/filename ::netex/id}
+                (op/and
+                  {::netex/transport-service-id transport-service-id}
+                  {::netex/status :ok}
+                  {::netex/filename op/not-null?})))
+
+(defn fetch-conversion [db file-id]
+  (first
+    (specql/fetch db
+                  ::netex/netex-conversion
+                  #{::netex/filename ::netex/id}
+                  (op/and
+                    {::netex/id file-id}
+                    {::netex/status :ok}
+                    {::netex/filename op/not-null?}))))
 
 (defn- path-allowed?
   "Checks if path is in a system directory or similar not allowed place. Returns true if allowed, false if not."
