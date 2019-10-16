@@ -29,6 +29,8 @@
             [ote.integration.export.geojson :as export-geojson]
             [ote.integration.export.gtfs :as export-gtfs]
             [ote.integration.export.csv :as export-csv]
+            [ote.integration.export.netex :as export-netex]
+
             [ote.integration.import.gtfs :as import-gtfs]
             [ote.integration.import.kalkati :as import-kalkati]
             [ote.integration.import.ytj :as fetch-ytj]
@@ -86,6 +88,7 @@
    :export-geojson (component/using (export-geojson/->GeoJSONExport) [:db :http])
    :export-gtfs (component/using (export-gtfs/->GTFSExport) [:db :http])
    :export-csv (component/using (export-csv/->CSVExport) [:db :http])
+   :export-netex (component/using (export-netex/->NeTExExport config) [:db :http])
    :import-gtfs (component/using (import-gtfs/->GTFSImport (:gtfs config)) [:db :http])
    :import-kalkati (component/using (import-kalkati/->KalkatiImport) [:http])
 
