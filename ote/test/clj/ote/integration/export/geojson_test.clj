@@ -3,7 +3,7 @@
             [clojure.test :as t :refer [use-fixtures deftest is testing]]
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.test.check.properties :as prop]
-            [ote.test :refer [system-fixture *ote* http-post http-get sql-execute!]]
+            [ote.test :refer [system-fixture http-post http-get sql-execute!]]
             [com.stuartsierra.component :as component]
             [ote.services.transport :as transport-service]
             [ote.db.service-generators :as service-generators]
@@ -14,14 +14,12 @@
             [ote.integration.export.transform :as transform]
             [ote.time :as time]
             [webjure.json-schema.validator.macro :refer [make-validator]]
-            [cheshire.core :as cheshire]
-            [taoensso.timbre :as log]
-            [clojure.string :as str]))
+            [cheshire.core :as cheshire]))
 
 (use-fixtures :each
   (system-fixture
    :transport (component/using (transport-service/->TransportService nil) [:http :db :email])
-   :export-geojson (component/using (geojson/->GeoJSONExport) [:db :http])))
+   :export-geojson (component/using (geojson/->GeoJSONExport (slurp "config.edn")) [:db :http])))
 
 (defn interval-value [{:keys [years months days hours minutes seconds]}]
   [years months
@@ -61,8 +59,7 @@
     ;; Fetch exported GeoJSON
     (let [geojson (export-geojson (:transit response))
           maximum-stay (get-in geojson [:features 0 :properties :transport-service
-                                        :parking :maximum-stay])
-          interval-fields (juxt :years :months :days :hours :minutes :seconds)]
+                                        :parking :maximum-stay])]
       ;; Check that maximum stay interval has the same fields in JSON and Clojure interval type
       (is (= (interval-value (time/iso-8601-period->interval maximum-stay))
              (interval-value (get-in service [::t-service/parking ::t-service/maximum-stay])))))))
@@ -121,8 +118,6 @@
 (defn valid-geojson? [geojson]
   (let [geojson (json* geojson)
         validation (geojson-validator geojson)]
-    (def geojson-validation-debug {:payload geojson
-                                   :errors validation})
     (nil? validation)))
 
 
@@ -135,6 +130,5 @@
                              "transport-service"
                              service)
          id (get-in response [:transit ::t-service/id])]
-
      (and (pos? id)
           (valid-geojson? (export-geojson (:transit response)))))))

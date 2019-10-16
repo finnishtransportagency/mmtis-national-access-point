@@ -85,7 +85,7 @@
                     [:http :db])
 
    ;; Integration: export GeoJSON, GTFS and CSV
-   :export-geojson (component/using (export-geojson/->GeoJSONExport) [:db :http])
+   :export-geojson (component/using (export-geojson/->GeoJSONExport config) [:db :http])
    :export-gtfs (component/using (export-gtfs/->GTFSExport) [:db :http])
    :export-csv (component/using (export-csv/->CSVExport) [:db :http])
    :export-netex (component/using (export-netex/->NeTExExport config) [:db :http])

@@ -13,8 +13,10 @@
             [ote.db.modification :as modification]
             [clojure.set :as set]
             [ote.integration.export.transform :as transform]
-
-            ;; Require time which extends PGInterval JSON generation
+            [ote.netex.netex :refer [fetch-conversions]]
+            ;[ote.db.netex :as netex]
+            [ote.integration.export.netex :as export-netex]
+    ;; Require time which extends PGInterval JSON generation
             [ote.time]
             [clojure.spec.alpha :as s]
             [taoensso.timbre :as log]
@@ -46,7 +48,8 @@
                         ;; Fetch linked external interfaces
                         [::t-service/external-interfaces #{::t-service/format ::t-service/license
                                                            ::t-service/data-content
-                                                           ::t-service/external-interface}])
+                                                           ::t-service/external-interface
+                                                           ::t-service/id}])
                   modification/modification-field-keys
                   #{::t-service/notice-external-interfaces?
                     ::t-service/company-csv-filename
@@ -75,20 +78,53 @@
                          :style {:fill (if primary? "green" "orange")}))
                 areas)})
 
-(defn- export-geojson [db transport-operator-id transport-service-id]
-  (let [areas (fetch-operation-area-for-service db {:transport-service-id transport-service-id})
-        operator (first (specql/fetch db ::t-operator/transport-operator
-                                      transport-operator-properties-columns
-                                      {::t-operator/id transport-operator-id}))
-        service (first (specql/fetch db ::t-service/transport-service
-                                     transport-service-properties-columns
-                                     {::t-service/transport-operator-id transport-operator-id
-                                      ::t-service/id transport-service-id
-                                      ::t-service/published op/not-null?}))
-        service (link-to-companies-csv-url service)
-        operator-without-personal-info (dissoc operator ::t-operator/gsm ::t-operator/visiting-address ::t-operator/email ::t-operator/phone)
-        service-without-personal-info (dissoc service ::t-service/contact-address ::t-service/contact-email ::t-service/contact-phone)]
-    (if (and (seq areas) operator service)
+(defn- append-nap-generated-netex-file-links [service db {{base-url :base-url} :environment} transport-service-id]
+  (when service
+    (let [netex-conversions (fetch-conversions db transport-service-id)]
+      (update service
+              ::t-service/external-interfaces
+              #(vec
+                 (concat []
+                         %
+                         (for [nc netex-conversions]
+                           {:format "NeTEx"
+                            :data-content (some             ; 1st taken because for now only one generated per interface
+                                            (fn [ext-if]
+                                              (when (= (::t-service/id ext-if) transport-service-id) ; ::t-service/external-interface-description id
+                                                (::t-service/data-content ext-if)))
+                                            (::t-service/external-interfaces service))
+                            ::t-service/external-interface (export-netex/file-download-url base-url
+                                                                                           transport-service-id
+                                                                                           (:ote.db.netex/id nc))})))))))
+
+(defn- export-geojson [db config transport-operator-id transport-service-id]
+  (let [areas (seq
+                (fetch-operation-area-for-service db
+                                                  {:transport-service-id transport-service-id}))
+        operator (when areas
+                   (-> (first
+                         (specql/fetch db
+                                       ::t-operator/transport-operator
+                                       transport-operator-properties-columns
+                                       {::t-operator/id transport-operator-id}))
+                       ;; Personal data should not be exported due to privacy requirement
+                       (dissoc ::t-operator/gsm ::t-operator/visiting-address ::t-operator/email ::t-operator/phone)))
+        service (when operator
+                  (-> (first
+                        (specql/fetch db
+                                      ::t-service/transport-service
+                                      transport-service-properties-columns
+                                      {::t-service/transport-operator-id transport-operator-id
+                                       ::t-service/id transport-service-id
+                                       ::t-service/published op/not-null?}))
+                      (append-nap-generated-netex-file-links db config transport-service-id)
+                      (link-to-companies-csv-url)
+                      ;; Personal data should not be exported due to privacy requirement
+                      (dissoc ::t-service/contact-address
+                              ::t-service/contact-email
+                              ::t-service/contact-phone
+                              ::t-service/id)))]
+    (if (and areas operator service)
       (-> areas
           styled-operation-area
           (feature-collection (transform/transform-deep
@@ -220,12 +256,12 @@
               "geometry" {:type "object"}}}}}})
 
 
-(define-service-component GeoJSONExport {}
-
+(define-service-component GeoJSONExport {:fields [config]}
   ^:unauthenticated
   (GET "/export/geojson/:transport-operator-id{[0-9]+}/:transport-service-id{[0-9]+}"
        [transport-operator-id transport-service-id]
        (export-geojson db
+                       config
                        (Long/parseLong transport-operator-id)
                        (Long/parseLong transport-service-id)))
 
