@@ -258,7 +258,7 @@
             country-code (some #(when (= pick-up-country (second %))
                                   (name (first %)))
                                (tr-tree [:country-list]))]
-        (if (and (some? country-code) (some? pick-up-country))
+        (if (some? pick-up-addresses)
           (assoc-in p [::t-service/pick-up-address ::common/country_code] country-code)
           p)))
     pick-up-addresses))
@@ -285,7 +285,7 @@
               (update-in app [:transport-service key ::t-service/pick-up-locations]
                          #(pul-country->country-code %))
               app)]
-    (if (and (some? country-code) (some? country))
+    (if (some? service)
       (assoc-in app [:transport-service key ::t-service/contact-address ::common/country_code] country-code)
       app)))
 
