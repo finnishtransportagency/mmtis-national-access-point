@@ -15,7 +15,7 @@
 (defn fetch-conversions [db transport-service-id]
   (specql/fetch db
                 ::netex/netex-conversion
-                #{::netex/filename ::netex/id}
+                #{::netex/filename ::netex/id ::netex/data-content}
                 (op/and
                   {::netex/transport-service-id transport-service-id}
                   {::netex/status :ok}
@@ -25,7 +25,7 @@
   (first
     (specql/fetch db
                   ::netex/netex-conversion
-                  #{::netex/filename ::netex/id}
+                  #{::netex/filename ::netex/id ::netex/data-content}
                   (op/and
                     {::netex/id file-id}
                     {::netex/status :ok}
@@ -119,7 +119,7 @@
   {:pre [(and (< 1 (count conversion-work-path))
               (not (clojure.string/blank? conversion-work-path)))
          (not (clojure.string/blank? gtfs-filename))
-         (seq gtfs-file)]}                             ;`is` used to print the value of a failed precondition
+         (seq gtfs-file)]}
   (let [import-config-filepath (str conversion-work-path "importGtfs.json")
         export-config-filepath (str conversion-work-path "exportNetexjson")
         gtfs-filepath (str conversion-work-path gtfs-filename)
@@ -175,21 +175,24 @@
 (defn set-conversion-status!
   "Resolves operation result based on input args and updates status to db.
   Return: On successful conversion true, on failure false"
-  [{:keys [netex-filepath s3-filename]} db {:keys [service-id external-interface-description-id]}]
+  [{:keys [netex-filepath s3-filename]}
+   db
+   {:keys [service-id external-interface-description-id external-interface-data-content] :as conversion-meta}]
   (let [result (if (clojure.string/blank? netex-filepath)
                  :error
                  :ok)]
     (log/info (str "GTFS->NeTEx result to db: service-id = " service-id
                    " result = " result
-                   ", external-interface-description-id = " external-interface-description-id
-                   ", s3-filename = " s3-filename))
+                   ", s3-filename = " s3-filename
+                   ", conversion-meta=" conversion-meta))
     (specql/upsert! db ::netex/netex-conversion
                     #{::netex/transport-service-id ::netex/external-interface-description-id}
                     {::netex/transport-service-id service-id
                      ::netex/external-interface-description-id external-interface-description-id
                      ::netex/filename (or s3-filename "")
                      ::netex/modified (ote.time/sql-date (java.time.LocalDate/now)) ; TODO: db created and modified use different timezone like this
-                     ::netex/status result})
+                     ::netex/status result
+                     ::netex/data-content (set (mapv keyword external-interface-data-content))})
     (= :ok result)))
 
 (defn gtfs->netex-and-set-status!
