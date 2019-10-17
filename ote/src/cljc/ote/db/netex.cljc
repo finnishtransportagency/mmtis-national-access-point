@@ -14,5 +14,6 @@
   ;; Tables
   ["netex-conversion" ::netex-conversion]
 
-  ;; Enum
-  ["netex_conversion_status" ::netex_conversion_status (specql.transform/transform (specql.transform/to-keyword))])
+  ;; Enums
+  ["netex_conversion_status" ::netex_conversion_status (specql.transform/transform (specql.transform/to-keyword))]
+  ["interface_data_content" ::interface-data-content (specql.transform/transform (specql.transform/to-keyword))])
