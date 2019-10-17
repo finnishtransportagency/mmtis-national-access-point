@@ -1,8 +1,7 @@
 (ns ote.integration.export.geojson
   "Integration service that serves GeoJSON documents for published
   transport services."
-  (:require [com.stuartsierra.component :as component]
-            [ote.components.http :as http]
+  (:require [ote.components.http :as http]
             [ote.components.service :refer [define-service-component]]
             [compojure.core :refer [GET]]
             [specql.core :as specql]
@@ -14,7 +13,6 @@
             [clojure.set :as set]
             [ote.integration.export.transform :as transform]
             [ote.netex.netex :refer [fetch-conversions]]
-            ;[ote.db.netex :as netex]
             [ote.integration.export.netex :as export-netex]
     ;; Require time which extends PGInterval JSON generation
             [ote.time]
@@ -62,12 +60,12 @@
   we remove company data from the geojson data set and replace it with link where companies data could be loaded."
   [service]
   (cond
-    (not (empty? (::t-service/companies service)))
-      (-> service
-          (assoc :csv-url (str "/export-company-csv/" (::t-service/id service)))
-          (dissoc ::t-service/companies))
+    (seq (::t-service/companies service))
+    (-> service
+        (assoc :csv-url (str "/export-company-csv/" (::t-service/id service)))
+        (dissoc ::t-service/companies))
     (not (nil? (::t-service/companies-csv-url service)))
-      (assoc service :csv-url (::t-service/companies-csv-url service))
+    (assoc service :csv-url (::t-service/companies-csv-url service))
     :else service))
 
 (defn- styled-operation-area [areas]
@@ -161,8 +159,7 @@
       {:anyOf [{:type "null"}
                (spec->json-schema (second spec))]}
 
-
-       ;; A nested object
+      ;; A nested object
       (= first-elt 'keys)
       {:type "object"
        :properties
@@ -178,10 +175,10 @@
       kw
       (case kw
         (:specql.data-types/varchar
-         :specql.data-types/bpchar
-         :specql.data-types/text
-         :specql.data-types/date
-         ::t-service/maximum-stay)
+          :specql.data-types/bpchar
+          :specql.data-types/text
+          :specql.data-types/date
+          ::t-service/maximum-stay)
         {:type "string"}
 
         :specql.data-types/bool
@@ -210,7 +207,7 @@
         ;; Default: Unrecognized, describe it and recurse
         (spec->json-schema (s/describe spec)))
 
-      :default
+      :else
       (do
         (log/debug "I don't know what this spec is: " (pr-str spec))
         {}))))
@@ -224,11 +221,11 @@
              [(name (first c))
               {:anyOf [{:type "null"}
                        {:type "array"
-                         :item {:type "object"
-                                :properties
-                                (into {}
-                                      (for [c (second c)]
-                                        [(name c) (spec->json-schema (s/describe c))]))}}]}]
+                        :item {:type "object"
+                               :properties
+                               (into {}
+                                     (for [c (second c)]
+                                       [(name c) (spec->json-schema (s/describe c))]))}}]}]
              [(name c) (spec->json-schema (s/describe c))])))})
 
 (def transport-operator-schema
@@ -237,8 +234,6 @@
    (into {}
          (for [c transport-operator-properties-columns]
            [(name c) (spec->json-schema (s/describe c))]))})
-
-
 
 (defn export-geojson-schema []
   {:$schema "http://json-schema.org/draft-07/schema#"
@@ -260,11 +255,12 @@
   ^:unauthenticated
   (GET "/export/geojson/:transport-operator-id{[0-9]+}/:transport-service-id{[0-9]+}"
        [transport-operator-id transport-service-id]
-       (export-geojson db
-                       config
-                       (Long/parseLong transport-operator-id)
-                       (Long/parseLong transport-service-id)))
+    (export-geojson db
+                    config
+                    (Long/parseLong transport-operator-id)
+                    (Long/parseLong transport-service-id)))
 
   ^:unauthenticated
-  (GET "/export/geojson/transport-service.schema.json" []
-       (http/json-response (#'export-geojson-schema))))
+  (GET "/export/geojson/transport-service.schema.json"
+       []
+    (http/json-response (#'export-geojson-schema))))
