@@ -56,7 +56,12 @@
       (mark-gtfs-package-imported! db interface))
     interface))
 
+;; Return value could be reafactored to something else,
+;; returned string used only for manually triggered operation result
 (defn update-one-gtfs!
+  "Selects the given service id, or if none given then selects the nexts service with external interface with new
+  content, downloads and stores the content.
+  Return: on success nil, on failure a string containing error details."
   ([config db upload-s3?]
    (update-one-gtfs! config db upload-s3? nil))
   ([config db upload-s3? service-id]
@@ -79,10 +84,14 @@
                                    interface
                                    upload-s3?
                                    force-download?)]
-           (if (netex/gtfs->netex-and-set-status! db (:netex config) conversion-meta)
-             nil                                            ; This if & nil used to make success branch more readable
-             (log/spy :warn "GTFS: Error on GTFS->NeTEx conversion"))
+
+           (if (feature/feature-enabled? config :netex-conversion-automated)
+             (if (netex/gtfs->netex-and-set-status! db (:netex config) conversion-meta)
+               nil                                          ; SUCCESS. Explicit nil to make success branch more obvious
+               (log/spy :warn "GTFS: Error on GTFS->NeTEx conversion"))
+             nil)                                           ; SUCCESS. Explicit nil to make success branch more obvious
            (log/spy :warn (str "GTFS: Could not import GTFS file. service-id = " (:ts-id interface))))
+
         (catch Exception e
           (log/spy :warn (str "GTFS: Error importing, uploading or saving gtfs package to db! Exception=" e))))
       (log/spy :debug (str "GTFS: No gtfs files to upload. service-id = " service-id))))))
