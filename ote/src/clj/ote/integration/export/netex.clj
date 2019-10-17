@@ -33,12 +33,10 @@
       ::stop (http/publish! http
                             {:authenticated? false}
                             (GET "/export/netex/:transport-service-id{[0-9]+}/:file-id{[0-9]+}"
-                                 ;{:keys [params]}
                               {{:keys [file-id]} :params}
                               (fetch-netex-response db
                                                     (:netex config)
-                                                    (Long/parseLong file-id)))
-                            )))
+                                                    (Long/parseLong file-id))))))
   (stop [{stop ::stop :as this}]
     (stop)
     (dissoc this ::stop)))
