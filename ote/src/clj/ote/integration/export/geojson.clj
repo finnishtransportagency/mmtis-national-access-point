@@ -46,10 +46,10 @@
   transport-service-properties-columns
   (set/difference (conj (specql/columns ::t-service/transport-service)
                         ;; Fetch linked external interfaces
-                        [::t-service/external-interfaces #{::t-service/format ::t-service/license
+                        [::t-service/external-interfaces #{::t-service/format
+                                                           ::t-service/license
                                                            ::t-service/data-content
-                                                           ::t-service/external-interface
-                                                           ::t-service/id}])
+                                                           ::t-service/external-interface}])
                   modification/modification-field-keys
                   #{::t-service/notice-external-interfaces?
                     ::t-service/company-csv-filename
@@ -73,12 +73,16 @@
 (defn- styled-operation-area [areas]
   {:type "GeometryCollection"
    :geometries (mapv
-                (fn [{:keys [geojson primary?]}]
-                  (assoc (cheshire/decode geojson keyword)
-                         :style {:fill (if primary? "green" "orange")}))
-                areas)})
+                 (fn [{:keys [geojson primary?]}]
+                   (assoc (cheshire/decode geojson keyword)
+                     :style {:fill (if primary? "green" "orange")}))
+                 areas)})
 
-(defn- append-nap-generated-netex-file-links [service db {{base-url :base-url} :environment} transport-service-id]
+(defn- append-nap-generated-netex-file-links
+  "NOTE: needs ::t-service/external-interface id property for external-interfaces in order to
+  copy `data-content` from interface into matching generated NeTEx link.
+  Returns `service` collection where external-interfaces is appended with interfaces with url to NAP NeTEx download link."
+  [service db {{base-url :base-url} :environment} transport-service-id]
   (when service
     (let [netex-conversions (fetch-conversions db transport-service-id)]
       (update service
@@ -86,16 +90,12 @@
               #(vec
                  (concat []
                          %
-                         (for [nc netex-conversions]
+                         (for [conversion netex-conversions]
                            {:format "NeTEx"
-                            :data-content (some             ; 1st taken because for now only one generated per interface
-                                            (fn [ext-if]
-                                              (when (= (::t-service/id ext-if) transport-service-id) ; ::t-service/external-interface-description id
-                                                (::t-service/data-content ext-if)))
-                                            (::t-service/external-interfaces service))
+                            :data-content (:ote.db.netex/data-content conversion)
                             ::t-service/external-interface (export-netex/file-download-url base-url
                                                                                            transport-service-id
-                                                                                           (:ote.db.netex/id nc))})))))))
+                                                                                           (:ote.db.netex/id conversion))})))))))
 
 (defn- export-geojson [db config transport-operator-id transport-service-id]
   (let [areas (seq
@@ -128,8 +128,8 @@
       (-> areas
           styled-operation-area
           (feature-collection (transform/transform-deep
-                               {:transport-operator operator-without-personal-info
-                                :transport-service service-without-personal-info}))
+                                {:transport-operator operator
+                                 :transport-service service}))
           (cheshire/encode {:key-fn name})
           json-response)
       {:status 404
