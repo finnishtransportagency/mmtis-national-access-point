@@ -63,11 +63,12 @@
   ;; Ensure that gtfs-import flag is enabled
    ;; upload-s3? should be false when using local environment
    (let [;; Load next gtfs package or package that is related to given service-id
-         interface (update (if service-id
-                             (fetch-given-gtfs-interface! db service-id)
-                             (fetch-next-gtfs-interface! db config))
-                           :data-content
-                           PgArray->vec)
+         interface (if service-id
+                     (fetch-given-gtfs-interface! db service-id)
+                     (fetch-next-gtfs-interface! db config))
+         interface (if (contains? interface :data-content)  ; Avoid creating a coll with empty key when coll doesn't exist
+                     (update interface :data-content PgArray->vec)
+                     interface)
          force-download? (integer? service-id)]
      (if interface
        (try
