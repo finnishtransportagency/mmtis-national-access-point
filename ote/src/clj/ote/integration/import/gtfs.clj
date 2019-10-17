@@ -301,12 +301,16 @@
 (defn download-and-store-transit-package
   "Download GTFS or kalkati file, optionally upload to s3, parse and store to database.
   Returns map containing an in-memory traffic gtfs package and related attribues or nil on failure "
-  [interface-type gtfs-config db url operator-id operator-name ts-id last-import-date license interface-id upload-s3?
+  [interface-type
+   gtfs-config
+   db
+   {:keys [url operator-id operator-name ts-id last-import-date license id data-content]}
+   upload-s3?
    force-download?]
   (log/debug "GTFS: Proceeding to download, service-id = " ts-id ", file url = " (pr-str url))
   (let [filename (gtfs-file-name operator-id ts-id)
-        latest-package (interface-latest-package db interface-id)
-        response (load-transit-interface-url interface-type db interface-id url last-import-date
+        latest-package (interface-latest-package db id)
+        response (load-transit-interface-url interface-type db id url last-import-date
                                              (:gtfs/etag latest-package) force-download?)
         new-etag (get-in response [:headers :etag])
         gtfs-file (:body response)]
@@ -315,13 +319,13 @@
       (do
         (log/warn "GTFS: service-id = " ts-id ", Got empty body as response when loading gtfs, URL = " url)
         (specql/insert! db ::t-service/external-interface-download-status
-                        {::t-service/external-interface-description-id interface-id
+                        {::t-service/external-interface-description-id id
                          ::t-service/download-status :failure
                          ::t-service/download-error (str "Virhe ladatatessa pakettia: " (pr-str response))
                          ::t-service/created (java.sql.Timestamp. (System/currentTimeMillis))}))
       (let [new-gtfs-hash (gtfs-hash gtfs-file)
             old-gtfs-hash (:gtfs/sha256 latest-package)]
-        ;; IF hash doesn't match, save new and upload file to s3√
+        ;; IF hash doesn't match, save new and upload file to s3
         (if (or force-download? (nil? old-gtfs-hash) (not= old-gtfs-hash new-gtfs-hash))
           (let [package (specql/insert! db :gtfs/package
                                         {:gtfs/sha256 new-gtfs-hash
@@ -331,19 +335,22 @@
                                          :gtfs/created (java.sql.Timestamp. (System/currentTimeMillis))
                                          :gtfs/etag new-etag
                                          :gtfs/license license
-                                         :gtfs/external-interface-description-id interface-id})]
+                                         :gtfs/external-interface-description-id id})]
             (when upload-s3?
-              (s3/put-object (:bucket gtfs-config) filename (java.io.ByteArrayInputStream. gtfs-file) {:content-length (count gtfs-file)})
+              (s3/put-object (:bucket gtfs-config)
+                             filename (java.io.ByteArrayInputStream. gtfs-file)
+                             {:content-length (count gtfs-file)})
               ;; Parse gtfs package and save it to database.
-              (save-gtfs-to-db db gtfs-file (:gtfs/id package) interface-id ts-id nil)
+              (save-gtfs-to-db db gtfs-file (:gtfs/id package) id ts-id nil)
               ;; Mark interface download a success
               (specql/insert! db ::t-service/external-interface-download-status
-                              {::t-service/external-interface-description-id interface-id
+                              {::t-service/external-interface-description-id id
                                ::t-service/download-status :success
                                ::t-service/package-id (:gtfs/id package)
                                ::t-service/created (java.sql.Timestamp. (System/currentTimeMillis))})))
 
-          (log/debug "GTFS: service-id = " ts-id ", File " filename " was found from db, no need to store or s3-upload. Thank you for trying."))))
+          (log/debug (str "GTFS: service-id=" ts-id ", File=" filename
+                          " was found from db, no need to store or s3-upload. Thank you for trying.")))))
 
     ;; returning nil signals failure
     (when gtfs-file
@@ -351,7 +358,8 @@
       {:gtfs-file gtfs-file
        :gtfs-filename filename
        :gtfs-basename (org.apache.commons.io.FilenameUtils/getBaseName filename)
-       :external-interface-description-id interface-id
+       :external-interface-description-id id
+       :external-interface-data-content data-content
        :service-id ts-id
        :operator-name operator-name})))
 
