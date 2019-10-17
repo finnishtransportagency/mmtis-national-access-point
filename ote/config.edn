@@ -55,7 +55,13 @@
                }
 
  ;; add features to the set to enable them in in this environment
- :enabled-features #{:ote-login :ote-operators-list :sea-routes :pre-notice :gtfs-import :ote-register}
+ :enabled-features #{:ote-login
+                     :ote-operators-list
+                     :sea-routes
+                     :pre-notice
+                     :gtfs-import
+                     :ote-register
+                     :netex-conversion-automated}
 
  :no-gtfs-update-for-operators #{}
 

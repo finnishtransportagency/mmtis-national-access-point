@@ -1,6 +1,7 @@
 (ns ote.integration.export.netex
   "Exporting service for traffic data in NeTEx format"
-  (:require [amazonica.aws.s3 :as s3]
+  (:require [ote.util.feature :as feature]
+            [amazonica.aws.s3 :as s3]
             [ote.netex.netex :as netex]
             [ring.util.io :as ring-io]
             [com.stuartsierra.component :as component]
@@ -30,13 +31,15 @@
   (start [{http :http
            db :db :as this}]
     (assoc this
-      ::stop (http/publish! http
-                            {:authenticated? false}
-                            (GET "/export/netex/:transport-service-id{[0-9]+}/:file-id{[0-9]+}"
-                              {{:keys [file-id]} :params}
-                              (fetch-netex-response db
-                                                    (:netex config)
-                                                    (Long/parseLong file-id))))))
+      ::stop
+      (when (feature/feature-enabled? config :netex-conversion-automated)
+        (http/publish! http
+                       {:authenticated? false}
+                       (GET "/export/netex/:transport-service-id{[0-9]+}/:file-id{[0-9]+}"
+                            {{:keys [file-id]} :params}
+                         (fetch-netex-response db
+                                               (:netex config)
+                                               (Long/parseLong file-id)))))))
   (stop [{stop ::stop :as this}]
     (stop)
     (dissoc this ::stop)))

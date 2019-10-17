@@ -5,7 +5,7 @@ testing_environment: "true"
 auth_shared_secret: "{{vault_beaker_session_secret}}"
 cookie_domain: "testi.finap.fi"
 base_url: "https://testi.finap.fi"
-flags: "#{:ote-login :ote-operators-list :sea-routes :pre-notice :gtfs-import :ote-register}"
+flags: "#{:ote-login :ote-operators-list :sea-routes :pre-notice :gtfs-import :ote-register :netex-conversion-automated}"
 ote_cookie_key: "{{vault_ote_cookie_key}}"
 pre_notice_attachment_bucket: "napote-pre-notice-attachment-dev"
 email_from: noreply@testi.finap.fi

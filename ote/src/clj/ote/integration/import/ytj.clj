@@ -71,10 +71,9 @@
 (defrecord YTJFetch [config]
   component/Lifecycle
   (start [{db :db http :http :as this}]
-    (log/debug "YTJ: starting")
     (assoc this ::stop
            (when (feature/feature-enabled? config :open-ytj-integration)
-             ;; require authentication because we don't want to be an open proxy for PRH API (and also there may be rate limits)             
+             ;; require authentication because we don't want to be an open proxy for PRH API (and also there may be rate limits)
              (http/publish! http {:authenticated? true}
                             (routes                           
                              (GET "/fetch/ytj" [company-id]
