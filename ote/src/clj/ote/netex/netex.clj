@@ -190,7 +190,7 @@
                     {::netex/transport-service-id service-id
                      ::netex/external-interface-description-id external-interface-description-id
                      ::netex/filename (or s3-filename "")
-                     ::netex/modified (ote.time/sql-date (java.time.LocalDate/now)) ; TODO: db created and modified use different timezone like this
+                     ::netex/modified (java.util.Date.)
                      ::netex/status result
                      ::netex/data-content (set (mapv keyword external-interface-data-content))})
     (= :ok result)))
