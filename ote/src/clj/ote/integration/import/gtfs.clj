@@ -300,7 +300,7 @@
 
 (defn download-and-store-transit-package
   "Download GTFS or kalkati file, optionally upload to s3, parse and store to database.
-  Returns map containing an in-memory traffic gtfs package and related attribues or nil on failure "
+  Returns map containing an in-memory traffic gtfs package and related attributes or nil on failure "
   [interface-type
    gtfs-config
    db
