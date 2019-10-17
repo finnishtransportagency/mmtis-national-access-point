@@ -317,7 +317,7 @@
 
     (if (nil? gtfs-file)
       (do
-        (log/warn "GTFS: service-id = " ts-id ", Got empty body as response when loading gtfs, URL = " url)
+        (log/warn "GTFS: service-id = " ts-id ", Got empty body as response when loading gtfs, URL = '" url "'")
         (specql/insert! db ::t-service/external-interface-download-status
                         {::t-service/external-interface-description-id id
                          ::t-service/download-status :failure

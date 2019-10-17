@@ -51,10 +51,10 @@
 (defn fetch-given-gtfs-interface!
   "Get gtfs package data from database for given service."
   [db service-id]
-  (let [gtfs-data (first (select-gtfs-url-for-service db {:service-id service-id}))]
-    (when gtfs-data
-      (mark-gtfs-package-imported! db gtfs-data))
-    gtfs-data))
+  (let [interface (first (select-gtfs-url-for-service db {:service-id service-id}))]
+    (when interface
+      (mark-gtfs-package-imported! db interface))
+    interface))
 
 (defn update-one-gtfs!
   ([config db upload-s3?]
@@ -79,10 +79,10 @@
                                    interface
                                    upload-s3?
                                    force-download?)]
-          (if (netex/gtfs->netex-and-set-status! db (:netex config) conversion-meta)
-            nil                                             ; This if & nil used to make success branch more readable
-            (log/spy :warn "GTFS: Error on GTFS->NeTEx conversion"))
-          (log/spy :warn (str "GTFS: Could not import GTFS file. service-id = " (:ts-id interface))))
+           (if (netex/gtfs->netex-and-set-status! db (:netex config) conversion-meta)
+             nil                                            ; This if & nil used to make success branch more readable
+             (log/spy :warn "GTFS: Error on GTFS->NeTEx conversion"))
+           (log/spy :warn (str "GTFS: Could not import GTFS file. service-id = " (:ts-id interface))))
         (catch Exception e
           (log/spy :warn (str "GTFS: Error importing, uploading or saving gtfs package to db! Exception=" e))))
       (log/spy :debug (str "GTFS: No gtfs files to upload. service-id = " service-id))))))
