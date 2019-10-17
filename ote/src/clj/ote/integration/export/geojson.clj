@@ -55,19 +55,6 @@
                     ::t-service/ckan-resource-id
                     ::t-service/ckan-dataset-id}))
 
-(defn- link-to-companies-csv-url
-  "Brokerage services could have lots of companies providing the service. With this function
-  we remove company data from the geojson data set and replace it with link where companies data could be loaded."
-  [service]
-  (cond
-    (seq (::t-service/companies service))
-    (-> service
-        (assoc :csv-url (str "/export-company-csv/" (::t-service/id service)))
-        (dissoc ::t-service/companies))
-    (not (nil? (::t-service/companies-csv-url service)))
-    (assoc service :csv-url (::t-service/companies-csv-url service))
-    :else service))
-
 (defn- styled-operation-area [areas]
   {:type "GeometryCollection"
    :geometries (mapv
@@ -116,8 +103,7 @@
                                        ::t-service/id transport-service-id
                                        ::t-service/published op/not-null?}))
                       (append-nap-generated-netex-file-links db config transport-service-id)
-                      (link-to-companies-csv-url)
-                      ;; Personal data should not be exported due to privacy requirement
+                      ;; Company contact details removed because of privacy requirement
                       (dissoc ::t-service/contact-address
                               ::t-service/contact-email
                               ::t-service/contact-phone
