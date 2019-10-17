@@ -59,7 +59,7 @@
 ;; Return value could be reafactored to something else,
 ;; returned string used only for manually triggered operation result
 (defn update-one-gtfs!
-  "Selects the given service id, or if none given then selects the nexts service with external interface with new
+  "Selects the given service id, or if none given then selects the next service with external interface with new
   content, downloads and stores the content.
   Return: on success nil, on failure a string containing error details."
   ([config db upload-s3?]
