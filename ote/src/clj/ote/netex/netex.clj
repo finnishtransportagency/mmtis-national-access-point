@@ -130,11 +130,11 @@
                               gtfs-basename)
                             "_netex.zip")
         chouette-cmd ["./chouette.sh"                       ; Vector used to allow logging shell invocation on error
-                      (str "-i " import-config-filepath)
-                      (str "-o " export-config-filepath)
-                      (str "-f " netex-filepath)
+                      "-i " import-config-filepath
+                      "-o " export-config-filepath
+                      "-f " netex-filepath
                       ;; Set chouette's internal work dir under ote work dir so it gets deleted as part of task cleanup
-                      (str "-d " conversion-work-path (get-in (config-nt/config) [:chouette :work-dir]))
+                      "-d " (str conversion-work-path (get-in netex-config-static [:chouette :work-dir]))
                       gtfs-filepath]]
 
     (if (and (path-allowed? gtfs-filepath)
