@@ -6,6 +6,8 @@
 
 (defn config []
   {:chouette {:work-dir "work/"
+              :input-config-file "importGtfs.json"
+              :export-config-file "exportNetex.json"
               :input-report-file "inputReport.json"
               :output-report-file "outputReport.json"
               :validation-report-file "validation_report.json"}})
