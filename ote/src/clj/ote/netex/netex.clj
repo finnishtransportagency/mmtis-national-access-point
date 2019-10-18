@@ -9,7 +9,7 @@
     [clojure.java.shell :refer [sh with-sh-dir]]
     [clojure.string :as str]
     [amazonica.aws.s3 :as s3]
-    [ote.config.netex-config :as config-nt]
+    [ote.config.netex-config :as config-nt-static]
     [specql.op :as op]))
 
 (defn fetch-conversions [db transport-service-id]
@@ -34,9 +34,9 @@
 (defn- path-allowed?
   "Checks if path is in a system directory or similar not allowed place. Returns true if allowed, false if not."
   [^String path]
-  (str/starts-with?
-    (.getAbsolutePath (clojure.java.io/file path))          ; TODO: should use .getCanonicalPath but osx
-    "/tmp/"))
+  (when-let [path-resolved (.getCanonicalPath (clojure.java.io/file path))]
+    (or (str/starts-with? path-resolved "/tmp/")
+        (str/starts-with? path-resolved "/private/tmp/")))) ; OSX resolves path under /private/
 
 (defn delete-files-recursively! [f1]
   (when (.isDirectory (io/file f1))
@@ -154,7 +154,10 @@
         (->
           (with-sh-dir chouette-path
                        (apply sh chouette-cmd))             ; TODO: use a dedicated user with limited access rights
-          (chouette-output-valid? config-netex (:chouette (config-nt/config)) netex-filepath chouette-cmd)))
+          (chouette-output-valid? config-netex
+                                  (:chouette (config-nt-static/config))
+                                  netex-filepath
+                                  chouette-cmd)))
       (do
         (log/error (str "Bad path argument(s) " config-netex))
         nil))))
