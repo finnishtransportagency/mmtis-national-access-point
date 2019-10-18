@@ -120,8 +120,9 @@
               (not (clojure.string/blank? conversion-work-path)))
          (not (clojure.string/blank? gtfs-filename))
          (seq gtfs-file)]}
-  (let [import-config-filepath (str conversion-work-path "importGtfs.json")
-        export-config-filepath (str conversion-work-path "exportNetexjson")
+  (let [netex-config-static (config-nt-static/config)
+        import-config-filepath (str conversion-work-path (get-in netex-config-static [:chouette :input-config-file]))
+        export-config-filepath (str conversion-work-path (get-in netex-config-static [:chouette :export-config-file]))
         gtfs-filepath (str conversion-work-path gtfs-filename)
         gtfs-name-suffix "_gtfs"
         netex-filepath (str conversion-work-path
