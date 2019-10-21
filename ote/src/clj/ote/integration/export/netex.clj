@@ -9,7 +9,7 @@
             [compojure.core :refer [GET]]
             [clojure.java.io :as io]))
 
-(defn file-download-url [base-url transport-service-id file-id]
+(defn file-download-url [{{base-url :base-url} :environment} transport-service-id file-id]
   (format "%sexport/netex/%d/%d" base-url transport-service-id file-id))
 
 (defn fetch-netex-response [db {:keys [bucket]} file-id]

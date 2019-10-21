@@ -68,7 +68,7 @@
   "NOTE: needs ::t-service/external-interface id property for external-interfaces in order to
   copy `data-content` from interface into matching generated NeTEx link.
   Returns `service` collection where external-interfaces is appended with interfaces with url to NAP NeTEx download link."
-  [service db {{base-url :base-url} :environment :as config} transport-service-id]
+  [service db config transport-service-id]
   (if (feature/feature-enabled? config :netex-conversion-automated)
     (when service
       (let [netex-conversions (fetch-conversions db transport-service-id)]
@@ -80,7 +80,7 @@
                            (for [conversion netex-conversions]
                              {:format "NeTEx"
                               :data-content (:ote.db.netex/data-content conversion)
-                              ::t-service/external-interface (export-netex/file-download-url base-url
+                              ::t-service/external-interface (export-netex/file-download-url config
                                                                                              transport-service-id
                                                                                              (:ote.db.netex/id conversion))}))))))
     service))
