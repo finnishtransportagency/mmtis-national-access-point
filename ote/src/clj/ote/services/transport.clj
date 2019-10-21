@@ -2,10 +2,9 @@
   "Services for getting transport data from database"
   (:require [com.stuartsierra.component :as component]
             [ote.components.http :as http]
-            [specql.core :refer [fetch update! insert! upsert! delete!] :as specql]
+            [specql.core :refer [fetch upsert! delete!] :as specql]
             [ote.db.transport-operator :as t-operator]
             [ote.db.transport-service :as t-service]
-            [ote.db.user :as user]
             [ote.db.common :as common]
             [ote.util.db :as util]
             [compojure.core :refer [routes GET POST DELETE]]
@@ -15,18 +14,10 @@
             [ote.services.external :as external]
             [ote.authorization :as authorization]
             [jeesql.core :refer [defqueries]]
-            [ote.db.tx :as tx]
             [ote.db.modification :as modification]
             [clojure.set :as set]
-            [ote.email :as email]
-            [hiccup.core :refer [html]]
-            [ote.time :as time]
-            [clj-time.core :as t]
-            [clojure.set :refer [rename-keys]]
-            [clj-time.coerce :as tc]
-            [clojure.string :as str]
-            [ote.netex.netex :refer [fetch-conversions] :as netex]
-            [ote.integration.export.netex :refer [file-download-url] :as export-netex])
+            [ote.netex.netex :as netex]
+            [ote.integration.export.netex :as export-netex])
   (:import (java.util UUID)))
 
 (defqueries "ote/services/places.sql")
@@ -118,9 +109,8 @@
 
 (defn delete-transport-service!
   "Delete single transport service by id"
-  [nap-config db user id]
-
-  (let [{::t-service/keys [transport-operator-id published]}
+  [db user id]
+  (let [{::t-service/keys [transport-operator-id]}
         (first (specql/fetch db ::t-service/transport-service
                              #{::t-service/transport-operator-id
                                ::t-service/published}
@@ -151,9 +141,7 @@
 (defn- update-rental-price-classes [service]
   (update-in service [::t-service/rentals ::t-service/vehicle-classes]
              (fn [vehicles]
-               (mapv #(let [before %
-                            after (fix-price-classes % [::t-service/price-classes])]
-                        after)
+               (mapv #(fix-price-classes % [::t-service/price-classes])
                      vehicles))))
 
 (defn- floats-to-bigdec
@@ -208,8 +196,7 @@
 
 (defn- removable-resources
   [from-db from-client]
-  (let [in-db (into #{} (map ::t-service/id) from-db)
-        from-ui (into #{} (map ::t-service/id) from-client)
+  (let [from-ui (into #{} (map ::t-service/id) from-client)
         to-delete (map #(select-keys % #{::t-service/id})
                        (filter (comp (complement from-ui) ::t-service/id) from-db))]
     to-delete))
@@ -270,11 +257,9 @@
 
 (defn- save-transport-service
   "UPSERT! given data to database. And convert possible float point values to bigdecimal"
-  [nap-config db user {places ::t-service/operation-area
+  [db user {places ::t-service/operation-area
                        external-interfaces ::t-service/external-interfaces
-                       service-company ::t-service/service-company
                        :as data}]
-  ;(println "DATA: " (pr-str data))
   (let [service-info (-> data
                          (modification/with-modification-fields ::t-service/id user)
                          (dissoc ::t-service/operation-area)
@@ -315,11 +300,11 @@
   in the service to be stored is in the set of allowed operators for the user.
   If authorization check succeeds, the transport service is saved to the database and optionally
   published to CKAN."
-  [nap-config db user request]
+  [db user request]
     (authorization/with-transport-operator-check
       db user (::t-service/transport-operator-id request)
       #(http/transit-response
-        (save-transport-service nap-config db user request))))
+        (save-transport-service db user request))))
 
 (defn- save-associated-operator
   "Save association between transport service and transport operator"
@@ -396,13 +381,12 @@
 
       (POST "/transport-service" {form-data :body
                                   user      :user}
-        (save-transport-service-handler nap-config db user (http/transit-request form-data)))
+        (save-transport-service-handler db user (http/transit-request form-data)))
 
       (POST "/transport-service/delete" {form-data :body
                                          user      :user}
         (http/transit-response
-          (delete-transport-service! nap-config db user
-                                     (:id (http/transit-request form-data)))))
+          (delete-transport-service! db user (:id (http/transit-request form-data)))))
 
       )))
 
