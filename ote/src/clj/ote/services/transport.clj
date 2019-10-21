@@ -24,7 +24,9 @@
             [clj-time.core :as t]
             [clojure.set :refer [rename-keys]]
             [clj-time.coerce :as tc]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [ote.netex.netex :refer [fetch-conversions] :as netex]
+            [ote.integration.export.netex :refer [file-download-url] :as export-netex])
   (:import (java.util UUID)))
 
 (defqueries "ote/services/places.sql")
@@ -87,9 +89,19 @@
                 add-error-data))
           modified-services)))
 
+(defn- append-ote-netex-interfaces [{::t-service/keys [id] :as service} config db]
+  (assoc service
+    :ote-interfaces
+    (vec
+      (sort-by :url
+               (mapv #(assoc %
+                        :url (export-netex/file-download-url config id (:ote.db.netex/id %))
+                        :format "NeTEx")
+                     (netex/fetch-conversions db id))))))
+
 (defn all-data-transport-service
   "Get single transport service by id"
-  [db id]
+  [config db id]
   (let [ts (first (fetch db ::t-service/transport-service
                          (conj (specql/columns ::t-service/transport-service)
                                ;; join external interfaces
@@ -97,8 +109,11 @@
                                 (specql/columns ::t-service/external-interface-description)])
                          {::t-service/id id}))]
     (if ts
-      (http/transit-response (assoc ts ::t-service/operation-area
-                                       (places/fetch-transport-service-operation-area db id)))
+      (http/transit-response
+        (-> (assoc ts ::t-service/operation-area
+                      (places/fetch-transport-service-operation-area db id))
+            (append-ote-netex-interfaces config db))
+        200)
       {:status 404})))
 
 (defn delete-transport-service!
@@ -332,7 +347,7 @@
 
 (defn public-data-transport-service
   "Get single transport service by id"
-  [db id]
+  [config db id]
   (let [ts (first (fetch db ::t-service/transport-service
                          (apply disj
                                 (conj (specql/columns ::t-service/transport-service)
@@ -343,8 +358,9 @@
                          {::t-service/id id}))]
     (if ts
       (http/transit-response
-        (assoc ts ::t-service/operation-area
-                  (places/fetch-transport-service-operation-area db id)))
+        (-> (assoc ts ::t-service/operation-area
+                      (places/fetch-transport-service-operation-area db id))
+            (append-ote-netex-interfaces config db)))
       {:status 404})))
 
 (defn ckan-group-id->group
@@ -404,8 +420,8 @@
                                               #{::t-service/transport-operator-id}
                                               {::t-service/id id})))]
         (if (or (authorization/admin? user) (authorization/is-author? db user operator-id))
-          (all-data-transport-service db id)
-          (public-data-transport-service db id))))))
+          (all-data-transport-service config db id)
+          (public-data-transport-service config db id))))))
 
 (defrecord TransportService [config]
   component/Lifecycle
