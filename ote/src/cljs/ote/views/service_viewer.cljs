@@ -8,6 +8,7 @@
             [reagent.core :as r]
             [ote.db.transport-operator :as t-operator]
             [ote.db.transport-service :as t-service]
+            [ote.db.netex :as netex]
             [ote.db.common :as common]
             [ote.util.transport-service-util :as tsu]
             [ote.app.controller.service-viewer :as svc]
@@ -303,8 +304,42 @@
                                style-base/info-content
                                {:color colors/gray650
                                 :font-style "italic"}))
-      (tr [:service-viewer :not-disclosed])])
-   [spacer]])
+      (tr [:service-viewer :not-disclosed])])])
+
+(defn- ote-interfaces
+  [title data]
+  [:div
+   (when data
+     (doall
+       (for [interface data
+             :let [title (string/join ", "
+                                      (map
+                                        #(tr [:enums ::netex/interface-data-content %])
+                                        (::netex/data-content interface)))
+                   url (:url interface)
+                   format (:format interface)
+                   descriptions ""]]
+         ^{:key (str (::netex/id interface) title)}
+         [info-sections-2-cols (string/upper-case title)
+          [:div
+           [common-ui/information-row-with-option
+            (tr [:service-search :homepage])
+            (when url [common-ui/linkify
+                       url
+                       url
+                       {:target "_blank"}])
+            false]
+           [common-ui/information-row-with-option
+            (tr [:field-labels :transport-service-common ::t-service/license])
+            nil
+            false]]
+          [:div
+           [common-ui/information-row-with-option (tr [:common-texts :format]) format false]
+           [information-row-with-selection
+            (tr [:field-labels :transport-service-common ::t-service/external-service-description])
+            nil
+            false]]
+          {:sub-title true}])))])
 
 (defn- luggage-warnings
   [title data]
@@ -841,6 +876,9 @@
        [service-info (tr [:service-viewer :transport-service-info]) ts sub-type-key]
        [service-area e! (tr [:service-viewer :service-area]) ts]
        [published-interfaces (tr [:service-viewer :published-interfaces]) interfaces]
+       [ote-interfaces "ote-netex-rajapinnat" (:ote-interfaces ts)]
+       [spacer]
+
        (case service-sub-type
          :rentals
          [:div
