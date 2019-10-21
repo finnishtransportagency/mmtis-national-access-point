@@ -15,7 +15,7 @@
 (defn fetch-conversions [db transport-service-id]
   (specql/fetch db
                 ::netex/netex-conversion
-                #{::netex/filename ::netex/id ::netex/data-content}
+                #{::netex/filename ::netex/id ::netex/data-content ::netex/transport-service-id}
                 (op/and
                   {::netex/transport-service-id transport-service-id}
                   {::netex/status :ok}
